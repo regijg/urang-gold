@@ -153,7 +153,7 @@ export default function TradeInForm({
         )}
         <input autoComplete="off" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Catatan (opsional)" className="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 text-sm dark:border-gray-700 dark:text-white" />
         {message && <p className="rounded-lg bg-error-50 px-4 py-2 text-sm text-error-600 dark:bg-error-500/10 dark:text-error-400">{message.text}</p>}
-        <button type="button" onClick={submit} disabled={pending || cart.length === 0 || oldValue === "0" || !settleOk} className="h-14 w-full rounded-xl bg-brand-500 text-lg font-semibold text-white disabled:opacity-50">
+        <button type="button" onClick={submit} disabled={pending || cart.length === 0 || oldValue === "0" || !settleOk} className="h-12 w-full rounded-xl bg-brand-500 text-lg font-semibold text-white disabled:opacity-50">
           {pending ? "Memproses..." : "Simpan Tukar Tambah"}
         </button>
       </div>

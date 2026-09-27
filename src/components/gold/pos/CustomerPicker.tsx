@@ -6,7 +6,7 @@ import { quickCreateCustomerAction, searchCustomersAction } from "@/app/(admin)/
 export type PickedCustomer = { id: string; name: string; phone: string | null };
 
 const input =
-  "h-12 w-full rounded-xl border border-gray-300 bg-transparent px-4 text-base text-gray-800 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90";
+  "h-11 w-full rounded-xl border border-gray-300 bg-transparent px-4 text-base text-gray-800 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90";
 
 /** Search-or-create customer (used by POS and buyback). */
 export default function CustomerPicker({

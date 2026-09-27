@@ -21,7 +21,7 @@ type FieldProps = { label: string; name: string; error?: string; hint?: string; 
 export function Field({ label, name, error, hint, required, children }: FieldProps) {
   return (
     <div>
-      <label htmlFor={name} className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+      <label htmlFor={name} className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-400">
         {label}
         {required && <span className="text-error-500"> *</span>}
       </label>
@@ -50,7 +50,7 @@ export function TextField({ name, label, error, hint, suffix, required, classNam
           name={name}
           autoComplete="off"
           aria-invalid={!!error}
-          className={`${inputBase} h-11 ${error ? inputErr : inputOk} ${suffix ? "pr-16" : ""} ${className ?? ""}`}
+          className={`${inputBase} h-10 ${error ? inputErr : inputOk} ${suffix ? "pr-16" : ""} ${className ?? ""}`}
           {...rest}
         />
         {suffix && <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-sm text-gray-400">{suffix}</span>}
@@ -72,7 +72,7 @@ export function CurrencyField({ name, label, error, hint, required, defaultValue
         onValueChange={setValue}
         placeholder={placeholder}
         aria-invalid={!!error}
-        className={`${inputBase} h-11 ${error ? inputErr : inputOk} ${className ?? ""}`}
+        className={`${inputBase} h-10 ${error ? inputErr : inputOk} ${className ?? ""}`}
       />
     </Field>
   );
@@ -110,7 +110,7 @@ type SelectProps = Omit<React.SelectHTMLAttributes<HTMLSelectElement>, "name"> &
 export function SelectField({ name, label, error, hint, required, placeholder, options, ...rest }: SelectProps) {
   return (
     <Field label={label} name={name} error={error} hint={hint} required={required}>
-      <select id={name} name={name} autoComplete="off" aria-invalid={!!error} className={`${inputBase} h-11 ${error ? inputErr : inputOk}`} {...rest}>
+      <select id={name} name={name} autoComplete="off" aria-invalid={!!error} className={`${inputBase} h-10 ${error ? inputErr : inputOk}`} {...rest}>
         {placeholder && <option value="">{placeholder}</option>}
         {options.map((o) => (
           <option key={o.value} value={o.value}>
@@ -154,5 +154,14 @@ export function SubmitButton({ children = "Simpan" }: { children?: React.ReactNo
 }
 
 export function FormCard({ children }: { children: React.ReactNode }) {
-  return <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">{children}</div>;
+  return <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">{children}</div>;
+}
+
+/** Keeps the save button visible at the bottom of the screen on long forms (use inside FormCard). */
+export function StickyActions({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="sticky bottom-0 z-10 -mx-5 -mb-5 mt-2 flex items-center justify-end gap-3 rounded-b-2xl border-t border-gray-100 bg-white/95 px-5 py-3 backdrop-blur dark:border-gray-800 dark:bg-gray-900/95">
+      {children}
+    </div>
+  );
 }

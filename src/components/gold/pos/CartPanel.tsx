@@ -9,7 +9,7 @@ import RupiahInput from "@/components/gold/RupiahInput";
 export type CartLine = PosItem & { discount: string };
 
 const input =
-  "h-12 w-full rounded-xl border border-gray-300 bg-transparent px-4 text-base text-gray-800 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90";
+  "h-11 w-full rounded-xl border border-gray-300 bg-transparent px-4 text-base text-gray-800 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90";
 // text colour set on the card so every amount inside is readable in light and dark mode
 const card = "rounded-2xl border border-gray-200 bg-white p-4 text-gray-800 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90";
 

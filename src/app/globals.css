@@ -193,7 +193,7 @@
 }
 
 @utility menu-item {
-  @apply relative flex items-center w-full gap-3 px-3 py-2 font-medium rounded-lg text-theme-sm;
+  @apply relative flex items-center w-full gap-2.5 px-3 py-1.5 font-medium rounded-lg text-theme-sm;
 }
 
 @utility menu-item-active {
@@ -229,7 +229,7 @@
 }
 
 @utility menu-dropdown-item {
-  @apply relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-theme-sm font-medium;
+  @apply relative flex items-center gap-3 rounded-lg px-3 py-1.5 text-theme-sm font-medium;
 }
 
 @utility menu-dropdown-item-active {
@@ -841,5 +841,13 @@ span.flatpickr-weekday,
   }
   @page {
     margin: 4mm;
+  }
+}
+
+/* GoldPOS density: smaller base size on laptop/desktop so forms fit without much scrolling.
+   Phones/tablets keep 16px (touch targets, and iOS zooms inputs with text < 16px). */
+@media (min-width: 1024px) {
+  html {
+    font-size: 14px;
   }
 }

@@ -10,14 +10,14 @@ type Props = {
 
 export default function PageHeader({ title, description, action, back }: Props) {
   return (
-    <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
       <div>
         {back && (
           <Link href={back.href} className="mb-2 inline-block text-sm text-gray-500 hover:text-brand-500 dark:text-gray-400">
             ← {back.label}
           </Link>
         )}
-        <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">{title}</h1>
+        <h1 className="text-xl font-semibold text-gray-900 dark:text-white">{title}</h1>
         {description && <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{description}</p>}
       </div>
       {action && (

@@ -168,9 +168,14 @@ export default function PurchaseForm({
       </div>
 
       {message && <p className="rounded-lg bg-error-50 px-4 py-2 text-sm text-error-600">{message}</p>}
-      <button type="button" onClick={submit} disabled={pending} className="rounded-xl bg-brand-500 px-6 py-3 font-semibold text-white disabled:opacity-50">
-        {pending ? "Menyimpan..." : "Simpan Pembelian"}
-      </button>
+      <div className="sticky bottom-0 z-10 flex items-center justify-between gap-3 rounded-2xl border border-gray-200 bg-white/95 px-5 py-3 shadow-lg backdrop-blur dark:border-gray-800 dark:bg-gray-900/95">
+        <span className="text-sm text-gray-600 dark:text-gray-300">
+          Total <span className="font-semibold text-gray-900 dark:text-white">{formatRupiah(total)}</span>
+        </span>
+        <button type="button" onClick={submit} disabled={pending} className="rounded-xl bg-brand-500 px-6 py-2.5 font-semibold text-white disabled:opacity-50">
+          {pending ? "Menyimpan..." : "Simpan Pembelian"}
+        </button>
+      </div>
     </div>
   );
 }

@@ -120,7 +120,7 @@ export default function PosScreen({ stores, canCustomers }: { stores: { id: stri
     <div className="grid gap-4 lg:grid-cols-[1fr_380px]">
       <div className="space-y-4">
         {stores.length > 1 && (
-          <select value={storeId} onChange={(e) => changeStore(e.target.value)} className="h-12 w-full rounded-xl border border-gray-300 bg-transparent px-4 text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white sm:w-64">
+          <select value={storeId} onChange={(e) => changeStore(e.target.value)} className="h-11 w-full rounded-xl border border-gray-300 bg-transparent px-4 text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white sm:w-64">
             {stores.map((s) => (
               <option key={s.id} value={s.id}>
                 {s.name}
@@ -136,7 +136,7 @@ export default function PosScreen({ stores, canCustomers }: { stores: { id: stri
         )}
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-4 lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:self-start lg:overflow-y-auto">
         {canCustomers && (
           <div className={card}>
             <p className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Customer</p>
@@ -163,7 +163,7 @@ export default function PosScreen({ stores, canCustomers }: { stores: { id: stri
           type="button"
           onClick={checkout}
           disabled={pending || cart.length === 0 || BigInt(change) < BigInt(0)}
-          className="h-14 w-full rounded-xl bg-brand-500 text-lg font-semibold text-white hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50"
+          className="h-12 w-full rounded-xl bg-brand-500 text-lg font-semibold text-white hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {pending ? "Memproses..." : `Bayar ${formatRupiah(total)}`}
         </button>

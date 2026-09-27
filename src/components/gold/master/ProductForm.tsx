@@ -10,6 +10,7 @@ import {
   FormAlert,
   FormCard,
   SelectField,
+  StickyActions,
   SubmitButton,
   TextAreaField,
   TextField,
@@ -33,7 +34,7 @@ const moneyText = (v?: string) => (v && Number(v) !== 0 ? String(v).replace(/\.0
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <fieldset className="space-y-5">
-      <legend className="mb-4 text-base font-semibold text-gray-900 dark:text-white">{title}</legend>
+      <legend className="mb-3 text-base font-semibold text-gray-900 dark:text-white">{title}</legend>
       {children}
     </fieldset>
   );
@@ -57,7 +58,7 @@ export default function ProductForm({ action, categories, purities, initial }: P
 
   return (
     <FormCard>
-      <form autoComplete="off" action={formAction} className="space-y-8" noValidate>
+      <form autoComplete="off" action={formAction} className="space-y-6" noValidate>
         <FormAlert state={state} />
 
         <Section title="Informasi Produk">
@@ -98,7 +99,9 @@ export default function ProductForm({ action, categories, purities, initial }: P
 
 
         <CheckboxField name="isActive" label="Aktif" defaultChecked={initial?.is_active ?? true} />
-        <SubmitButton />
+        <StickyActions>
+          <SubmitButton />
+        </StickyActions>
       </form>
     </FormCard>
   );

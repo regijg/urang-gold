@@ -44,8 +44,8 @@ const MAX = 200;
 
 function Step({ n, title, hint, children }: { n: number; title: string; hint?: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-2xl border border-gray-200 bg-white p-5 text-gray-800 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90">
-      <div className="mb-4 flex items-start gap-3">
+    <section className="rounded-2xl border border-gray-200 bg-white p-4 text-gray-800 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90">
+      <div className="mb-3 flex items-start gap-3">
         <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-500 text-sm font-semibold text-white">{n}</span>
         <div>
           <h2 className="font-semibold text-gray-900 dark:text-white">{title}</h2>
@@ -187,7 +187,7 @@ export default function ReceiveForm({ action, products, stores, locations, defau
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Ketik nama, SKU, atau kadar… mis. cincin 18k"
-              className={`${input} ${errors.productId ? errBorder : okBorder} h-12 text-base`}
+              className={`${input} ${errors.productId ? errBorder : okBorder} h-11 text-base`}
               autoFocus
             />
             {errors.productId && <p className="mt-1 text-sm text-error-500">{errors.productId}</p>}
@@ -304,7 +304,7 @@ export default function ReceiveForm({ action, products, stores, locations, defau
                         onKeyDown={(e) => onWeightKey(e, i)}
                         inputMode="decimal"
                         placeholder="Ketik berat"
-                        className={`${input} ${err("grossWeight") || missing.has(r.key) ? errBorder : okBorder} h-12 pr-14 text-lg font-semibold placeholder:text-sm placeholder:font-normal`}
+                        className={`${input} ${err("grossWeight") || missing.has(r.key) ? errBorder : okBorder} h-11 pr-14 text-lg font-semibold placeholder:text-sm placeholder:font-normal`}
                         aria-label={`Berat keping ${i + 1}`}
                       />
                       <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-sm text-gray-400">gram</span>
@@ -320,7 +320,7 @@ export default function ReceiveForm({ action, products, stores, locations, defau
                         onChange={(e) => setRow(r.key, { stone: e.target.value })}
                         inputMode="decimal"
                         placeholder={`Batu: ${product ? String(product.stone_weight).replace(".", ",") : "0"} g`}
-                        className={`${input} ${err("stoneWeight") ? errBorder : okBorder} h-12`}
+                        className={`${input} ${err("stoneWeight") ? errBorder : okBorder} h-11`}
                         aria-label={`Berat batu keping ${i + 1}`}
                       />
                       <input autoComplete="off"
@@ -328,7 +328,7 @@ export default function ReceiveForm({ action, products, stores, locations, defau
                         value={r.serial}
                         onChange={(e) => setRow(r.key, { serial: e.target.value })}
                         placeholder="No. seri (opsional)"
-                        className={`${input} ${okBorder} h-12`}
+                        className={`${input} ${okBorder} h-11`}
                         aria-label={`Nomor seri keping ${i + 1}`}
                       />
                       <RupiahInput
@@ -336,7 +336,7 @@ export default function ReceiveForm({ action, products, stores, locations, defau
                         value={r.cost}
                         onValueChange={(v) => setRow(r.key, { cost: v })}
                         placeholder={product ? `Modal ${groupThousands(product.cost_price)}` : "Harga modal"}
-                        className={`${input} ${err("costPrice") ? errBorder : okBorder} h-12`}
+                        className={`${input} ${err("costPrice") ? errBorder : okBorder} h-11`}
                         aria-label={`Harga modal keping ${i + 1}`}
                       />
                     </>
@@ -351,7 +351,7 @@ export default function ReceiveForm({ action, products, stores, locations, defau
         )}
       </Step>
 
-      <section className="rounded-2xl border border-gray-200 bg-white p-5 text-gray-800 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90">
+      <section className="sticky bottom-0 z-10 rounded-2xl border border-gray-200 bg-white/95 p-4 text-gray-800 shadow-lg backdrop-blur dark:border-gray-800 dark:bg-gray-900/95 dark:text-white/90">
         <label className="text-sm text-gray-600 dark:text-gray-400">
           Catatan (opsional)
           <input autoComplete="off" name="notes" placeholder="mis. stok awal, barang titipan" className={`${input} ${okBorder} mt-1 h-11`} />
