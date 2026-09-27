@@ -48,6 +48,20 @@ export function formatDateTime(value: string | Date | null | undefined): string 
   return Number.isNaN(d.getTime()) ? "-" : dateTimeFormatter.format(d);
 }
 
+/** Keeps digits only (max 13), no leading zeros: "Rp 1.500.000" -> "1500000". For money inputs. */
+export function onlyDigits(value: string): string {
+  return value.replace(/\D/g, "").replace(/^0+(?=\d)/, "").slice(0, 13);
+}
+
+/**
+ * Groups an integer-rupiah value for display while typing: "1500000" -> "1.500.000".
+ * Also accepts DB numerics ("1500000.00") and already grouped text ("1.500.000").
+ */
+export function groupThousands(value: string | number | null | undefined): string {
+  const d = onlyDigits(String(value ?? "").replace(/[.,]\d{1,2}$/, ""));
+  return d.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
 /** 3.21 -> "3,21 gram" */
 export function formatGram(value: number | string | null | undefined): string {
   return `${gramFormatter.format(toNumber(value))} gram`;

@@ -88,8 +88,7 @@ const navItems: NavItem[] = [
     icon: <ArchiveBoxIcon className="w-5 h-5" />,
     name: "Inventory",
     subItems: [
-      { name: "Stok", path: "/inventory", permission: ["inventory.view", "pos.use"] },
-      { name: "Stok Masuk", path: "/inventory/new", permission: "inventory.manage" },
+      { name: "Daftar Stok", path: "/inventory", permission: ["inventory.view", "pos.use"] },
       { name: "Transfer", path: "/inventory/transfer", permission: "stock_transfer.manage" },
       { name: "Mutasi", path: "/inventory/movements", permission: "inventory.view" },
       { name: "Stock Opname", path: "/inventory/stock-opname", permission: ["stock_opname.manage", "stock_opname.approve", "reports.view"] },

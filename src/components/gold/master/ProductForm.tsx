@@ -1,13 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import React, { useActionState, useState } from "react";
+import React, { useActionState } from "react";
 import type { ActionResult } from "@/lib/action-result";
 import type { ProductRow } from "@/server/repositories/product.repository";
 import {
   CheckboxField,
   CurrencyField,
-  Field,
   FormAlert,
   FormCard,
   SelectField,
@@ -25,7 +24,6 @@ type Props = {
   categories: Option[];
   purities: Option[];
   initial?: ProductRow;
-  photoUrl?: string | null;
 };
 
 /** numeric string from Postgres -> Indonesian input text ("3.210" -> "3,210", "8500000.00" -> "8500000") */
@@ -41,10 +39,9 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   );
 }
 
-export default function ProductForm({ action, categories, purities, initial, photoUrl }: Props) {
+export default function ProductForm({ action, categories, purities, initial }: Props) {
   const [state, formAction] = useActionState(action, null);
   const errors = fieldErrorsOf(state);
-  const [preview, setPreview] = useState<string | null>(null);
 
   // Created, but the photo upload failed: product exists, offer to continue on its page.
   if (state?.success) {
@@ -60,7 +57,7 @@ export default function ProductForm({ action, categories, purities, initial, pho
 
   return (
     <FormCard>
-      <form action={formAction} className="space-y-8" noValidate>
+      <form autoComplete="off" action={formAction} className="space-y-8" noValidate>
         <FormAlert state={state} />
 
         <Section title="Informasi Produk">
@@ -99,28 +96,6 @@ export default function ProductForm({ action, categories, purities, initial, pho
           </div>
         </Section>
 
-        <Section title="Foto">
-          <Field label="Foto Produk" name="photo" error={errors.photo} hint="JPG, PNG, atau WEBP, maksimal 2 MB">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-              {(preview || photoUrl) && (
-                // eslint-disable-next-line @next/next/no-img-element -- blob: previews are not supported by next/image
-                <img src={preview ?? photoUrl ?? ""} alt="Foto produk" className="h-28 w-28 rounded-lg border border-gray-200 object-cover dark:border-gray-800" />
-              )}
-              <input
-                id="photo"
-                name="photo"
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  setPreview(file ? URL.createObjectURL(file) : null);
-                }}
-                className="text-sm text-gray-700 file:mr-4 file:rounded-lg file:border-0 file:bg-brand-50 file:px-4 file:py-2 file:text-sm file:font-medium file:text-brand-600 dark:text-gray-300"
-              />
-            </div>
-          </Field>
-          {initial?.photo_path && <CheckboxField name="removePhoto" label="Hapus foto saat ini" />}
-        </Section>
 
         <CheckboxField name="isActive" label="Aktif" defaultChecked={initial?.is_active ?? true} />
         <SubmitButton />

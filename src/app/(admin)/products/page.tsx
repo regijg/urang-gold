@@ -7,7 +7,6 @@ import Pagination from "@/components/gold/Pagination";
 import StatusBadge from "@/components/gold/StatusBadge";
 import { formatGram, formatRupiah } from "@/lib/format";
 import { parsePage } from "@/lib/validation/common";
-import { productPhotoUrl } from "@/lib/validation/image";
 import { requireAppSession } from "@/server/auth/session";
 import { loadPage } from "@/server/page-guard";
 import { categoryService } from "@/server/services/master-data.service";
@@ -69,15 +68,8 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
           {
             header: "Produk",
             cell: (r) => {
-              const url = productPhotoUrl(r.photo_path);
               return (
                 <div className="flex items-center gap-3">
-                  {url ? (
-                    // eslint-disable-next-line @next/next/no-img-element -- small thumbnails from public storage
-                    <img src={url} alt="" className="h-10 w-10 rounded-md object-cover" loading="lazy" />
-                  ) : (
-                    <div className="h-10 w-10 rounded-md bg-gray-100 dark:bg-white/5" />
-                  )}
                   <div>
                     {canManage ? (
                       <Link href={`/products/${r.id}`} className="font-medium text-brand-500 hover:underline">{r.name}</Link>

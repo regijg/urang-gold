@@ -7,6 +7,7 @@ import { parseRupiah } from "@/lib/validation/common";
 import { subRupiah, sumRupiah } from "@/lib/validation/sales";
 import { createPurchaseAction } from "@/app/(admin)/purchases/actions";
 import PaymentEditor, { type PaymentRow } from "./pos/PaymentEditor";
+import RupiahInput from "@/components/gold/RupiahInput";
 
 type Option = { value: string; label: string };
 type Row = { key: number; productId: string; grossWeight: string; stoneWeight: string; serialNumber: string; costPrice: string; laborCost: string };
@@ -90,11 +91,11 @@ export default function PurchaseForm({
           </label>
           <label className="text-xs text-gray-500">
             No. invoice supplier
-            <input value={head.supplierInvoice} onChange={(e) => setHead({ ...head, supplierInvoice: e.target.value })} className={`${cell} ${border("supplierInvoice")}`} />
+            <input autoComplete="off" value={head.supplierInvoice} onChange={(e) => setHead({ ...head, supplierInvoice: e.target.value })} className={`${cell} ${border("supplierInvoice")}`} />
           </label>
           <label className="text-xs text-gray-500">
             Tanggal *
-            <input type="date" max={today} value={head.purchaseDate} onChange={(e) => setHead({ ...head, purchaseDate: e.target.value })} className={`${cell} ${border("purchaseDate")}`} />
+            <input autoComplete="off" type="date" max={today} value={head.purchaseDate} onChange={(e) => setHead({ ...head, purchaseDate: e.target.value })} className={`${cell} ${border("purchaseDate")}`} />
             {err("purchaseDate")}
           </label>
           <label className="text-xs text-gray-500">
@@ -139,11 +140,11 @@ export default function PurchaseForm({
                     </select>
                     {err(`productId.${i}`)}
                   </td>
-                  <td className="px-1 py-1"><input value={r.grossWeight} onChange={(e) => setRow(r.key, { grossWeight: e.target.value })} inputMode="decimal" className={`${cell} ${border(`grossWeight.${i}`)}`} />{err(`grossWeight.${i}`)}</td>
-                  <td className="px-1 py-1"><input value={r.stoneWeight} onChange={(e) => setRow(r.key, { stoneWeight: e.target.value })} inputMode="decimal" placeholder="Ikuti produk" className={`${cell} ${border(`stoneWeight.${i}`)}`} /></td>
-                  <td className="px-1 py-1"><input value={r.serialNumber} onChange={(e) => setRow(r.key, { serialNumber: e.target.value })} className={`${cell} border-gray-300 dark:border-gray-700`} /></td>
-                  <td className="px-1 py-1"><input value={r.costPrice} onChange={(e) => setRow(r.key, { costPrice: e.target.value })} inputMode="numeric" className={`${cell} ${border(`costPrice.${i}`)}`} />{err(`costPrice.${i}`)}</td>
-                  <td className="px-1 py-1"><input value={r.laborCost} onChange={(e) => setRow(r.key, { laborCost: e.target.value })} inputMode="numeric" className={`${cell} ${border(`laborCost.${i}`)}`} /></td>
+                  <td className="px-1 py-1"><input autoComplete="off" value={r.grossWeight} onChange={(e) => setRow(r.key, { grossWeight: e.target.value })} inputMode="decimal" className={`${cell} ${border(`grossWeight.${i}`)}`} />{err(`grossWeight.${i}`)}</td>
+                  <td className="px-1 py-1"><input autoComplete="off" value={r.stoneWeight} onChange={(e) => setRow(r.key, { stoneWeight: e.target.value })} inputMode="decimal" placeholder="Ikuti produk" className={`${cell} ${border(`stoneWeight.${i}`)}`} /></td>
+                  <td className="px-1 py-1"><input autoComplete="off" value={r.serialNumber} onChange={(e) => setRow(r.key, { serialNumber: e.target.value })} className={`${cell} border-gray-300 dark:border-gray-700`} /></td>
+                  <td className="px-1 py-1"><RupiahInput value={r.costPrice} onValueChange={(v) => setRow(r.key, { costPrice: v })} className={`${cell} ${border(`costPrice.${i}`)} min-w-36`} />{err(`costPrice.${i}`)}</td>
+                  <td className="px-1 py-1"><RupiahInput value={r.laborCost} onValueChange={(v) => setRow(r.key, { laborCost: v })} className={`${cell} ${border(`laborCost.${i}`)} min-w-32`} /></td>
                   <td className="px-1 py-1">
                     {rows.length > 1 && <button type="button" onClick={() => setRows((rs) => rs.filter((x) => x.key !== r.key))} className="text-sm text-error-500">Hapus</button>}
                   </td>
@@ -163,7 +164,7 @@ export default function PurchaseForm({
         <p className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Pembayaran ke supplier (opsional — bisa dilunasi nanti)</p>
         <PaymentEditor payments={payments} setPayments={setPayments} target={total} />
         <p className="mt-2 text-sm text-gray-500">Sisa hutang: {formatRupiah(subRupiah(total, paid).replace(/^-.*/, "0"))}</p>
-        <input value={head.notes} onChange={(e) => setHead({ ...head, notes: e.target.value })} placeholder="Catatan" className={`${cell} mt-3 border-gray-300 dark:border-gray-700`} />
+        <input autoComplete="off" value={head.notes} onChange={(e) => setHead({ ...head, notes: e.target.value })} placeholder="Catatan" className={`${cell} mt-3 border-gray-300 dark:border-gray-700`} />
       </div>
 
       {message && <p className="rounded-lg bg-error-50 px-4 py-2 text-sm text-error-600">{message}</p>}

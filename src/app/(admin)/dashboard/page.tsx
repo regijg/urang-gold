@@ -42,7 +42,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
     { href: "/sales/new", label: "Kasir (POS)", show: can("pos.use") },
     { href: "/buybacks/new", label: "Buyback", show: can("buybacks.manage") },
     { href: "/trade-ins/new", label: "Tukar Tambah", show: can("trade_ins.manage") },
-    { href: "/inventory/new", label: "Stok Masuk", show: can("inventory.manage") },
+    { href: "/inventory/new", label: "Tambah Stok", show: can("inventory.manage") },
     { href: "/inventory/stock-opname", label: "Stock Opname", show: can("stock_opname.manage") },
     { href: "/gold-rates", label: "Harga Emas", show: can("gold_rates.manage") },
   ].filter((q) => q.show);

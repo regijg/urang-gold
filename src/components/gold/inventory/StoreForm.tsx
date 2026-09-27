@@ -15,7 +15,7 @@ export default function StoreForm({ action, initial }: Props) {
   const errors = fieldErrorsOf(state);
   return (
     <FormCard>
-      <form action={formAction} className="space-y-5" noValidate>
+      <form autoComplete="off" action={formAction} className="space-y-5" noValidate>
         <FormAlert state={state} />
         <div className="grid gap-5 sm:grid-cols-2">
           <TextField name="code" label="Kode Outlet" required defaultValue={initial?.code} placeholder="JKT-01" error={errors.code} className="uppercase" />

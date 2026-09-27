@@ -9,7 +9,7 @@ export default function VoidSaleForm({ action }: { action: (prev: ActionResult |
   const errors = fieldErrorsOf(state);
   if (state?.success) return <p className="text-sm text-success-600">{state.message}</p>;
   return (
-    <form
+    <form autoComplete="off"
       action={formAction}
       onSubmit={(e) => {
         if (!window.confirm("Batalkan transaksi ini? Barang akan kembali tersedia dan pembayaran dicatat sebagai refund.")) e.preventDefault();

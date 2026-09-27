@@ -22,7 +22,7 @@ export default function LocationForm({ action, stores, locations, initial, defau
 
   return (
     <FormCard>
-      <form action={formAction} className="space-y-5" noValidate>
+      <form autoComplete="off" action={formAction} className="space-y-5" noValidate>
         <FormAlert state={state} />
         <div className="grid gap-5 sm:grid-cols-2">
           <SelectField name="storeId" label="Outlet" required options={stores} value={storeId} onChange={(e) => setStoreId(e.target.value)} error={errors.storeId} />

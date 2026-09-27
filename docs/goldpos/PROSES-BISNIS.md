@@ -147,7 +147,7 @@ Customer membawa emas lama dan mengambil barang baru dalam **satu transaksi**:
 
 | Asal barang | Menu | Keterangan |
 |---|---|---|
-| Stok awal / titipan | Inventory → Stok Masuk | Input berat tiap keping, cetak label barcode |
+| Stok awal / titipan | Inventory → + Tambah Stok | Input berat tiap keping, cetak label barcode |
 | Pembelian dari supplier | Pembelian | Catat supplier, no. invoice, harga modal + ongkos; hutang ke supplier bisa dicicil |
 | Buyback / tukar tambah | Buyback, Tukar Tambah | Masuk otomatis dari transaksi |
 

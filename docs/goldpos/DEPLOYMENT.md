@@ -28,7 +28,7 @@
 ## 4. Checklist setelah deploy
 
 - [ ] Login owner, atur **Harga Emas** semua kadar yang dipakai.
-- [ ] Buat outlet, lokasi/baki, produk, lalu **Stok Masuk** dan cetak label barcode.
+- [ ] Buat outlet, lokasi/baki, produk, lalu **Tambah Stok** dan cetak label barcode.
 - [ ] Buat akun kasir (Pengguna) dengan akses outlet yang benar.
 - [ ] Uji satu penjualan, buyback, dan void di jam sepi.
 - [ ] Aktifkan katalog online per outlet hanya jika ingin stok & harga terlihat publik.

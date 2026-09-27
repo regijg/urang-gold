@@ -3,7 +3,7 @@
 import Link from "next/link";
 import React, { useMemo, useState, useTransition } from "react";
 import { formatRupiah } from "@/lib/format";
-import { waLink } from "@/lib/whatsapp";
+import { buildReceiptMessage, waLink } from "@/lib/whatsapp";
 import { subRupiah, sumRupiah } from "@/lib/validation/sales";
 import { checkoutAction, repriceAction } from "@/app/(admin)/sales/actions";
 import CartPanel, { type CartLine } from "./CartPanel";
@@ -83,7 +83,26 @@ export default function PosScreen({ stores, canCustomers }: { stores: { id: stri
           ))}
         </div>
         <a
-          href={waLink(customer?.phone, `Terima kasih telah berbelanja. Nota ${done.invoice_number}: ${notaUrl}`)}
+          href={waLink(
+            customer?.phone,
+            buildReceiptMessage({
+              storeName: stores.find((st) => st.id === storeId)?.name ?? "",
+              invoiceNumber: done.invoice_number,
+              customerName: customer?.name,
+              items: cart.map((l) => ({
+                name: l.name,
+                purity: l.purity_code,
+                weight: l.gross_weight,
+                price: subRupiah(l.price ?? "0", l.discount || "0"),
+                discount: l.discount,
+              })),
+              discountTotal,
+              total: done.total,
+              payments,
+              change: done.change_amount,
+              url: notaUrl,
+            })
+          )}
           target="_blank"
           rel="noreferrer"
           className="mt-3 block rounded-lg border border-success-300 py-2.5 text-sm text-success-700 dark:text-success-400"
@@ -138,7 +157,7 @@ export default function PosScreen({ stores, canCustomers }: { stores: { id: stri
             <div className="flex justify-between"><dt className="text-gray-500">Dibayar</dt><dd>{formatRupiah(paid)}</dd></div>
             <div className="flex justify-between"><dt className="text-gray-500">{BigInt(change) >= BigInt(0) ? "Kembalian" : "Kurang"}</dt><dd>{formatRupiah(change.replace("-", ""))}</dd></div>
           </dl>
-          <input value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Catatan (opsional)" className="mt-3 h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 text-sm dark:border-gray-700 dark:text-white" />
+          <input autoComplete="off" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Catatan (opsional)" className="mt-3 h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 text-sm dark:border-gray-700 dark:text-white" />
         </div>
         <button
           type="button"

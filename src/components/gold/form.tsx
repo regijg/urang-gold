@@ -3,6 +3,8 @@
 import React from "react";
 import { useFormStatus } from "react-dom";
 import type { ActionResult } from "@/lib/action-result";
+import RupiahInput from "./RupiahInput";
+import { onlyDigits } from "@/lib/format";
 
 const inputBase =
   "w-full rounded-lg border px-4 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30";
@@ -46,6 +48,7 @@ export function TextField({ name, label, error, hint, suffix, required, classNam
         <input
           id={name}
           name={name}
+          autoComplete="off"
           aria-invalid={!!error}
           className={`${inputBase} h-11 ${error ? inputErr : inputOk} ${suffix ? "pr-16" : ""} ${className ?? ""}`}
           {...rest}
@@ -56,9 +59,23 @@ export function TextField({ name, label, error, hint, suffix, required, classNam
   );
 }
 
-/** Rupiah input: free text, parsed on the server ("8.500.000" or "8500000"). */
-export function CurrencyField(props: Omit<InputProps, "suffix">) {
-  return <TextField inputMode="numeric" placeholder="0" {...props} suffix="IDR" />;
+/** Rupiah input with live thousand separators ("Rp 8.500.000"); parsed on the server by parseRupiah. */
+export function CurrencyField({ name, label, error, hint, required, defaultValue, className, placeholder = "0", ...rest }: Omit<InputProps, "suffix">) {
+  const [value, setValue] = React.useState(onlyDigits(String(defaultValue ?? "").replace(/[.,]\d{1,2}$/, "")));
+  return (
+    <Field label={label} name={name} error={error} hint={hint} required={required}>
+      <RupiahInput
+        {...(rest as Omit<React.InputHTMLAttributes<HTMLInputElement>, "value" | "onChange" | "type">)}
+        id={name}
+        name={name}
+        value={value}
+        onValueChange={setValue}
+        placeholder={placeholder}
+        aria-invalid={!!error}
+        className={`${inputBase} h-11 ${error ? inputErr : inputOk} ${className ?? ""}`}
+      />
+    </Field>
+  );
 }
 
 /** Gram input: accepts "3,21" or "3.21", parsed on the server. */
@@ -76,7 +93,7 @@ type TextAreaProps = Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, "na
 export function TextAreaField({ name, label, error, hint, required, ...rest }: TextAreaProps) {
   return (
     <Field label={label} name={name} error={error} hint={hint} required={required}>
-      <textarea id={name} name={name} rows={3} aria-invalid={!!error} className={`${inputBase} py-2.5 ${error ? inputErr : inputOk}`} {...rest} />
+      <textarea id={name} name={name} rows={3} autoComplete="off" aria-invalid={!!error} className={`${inputBase} py-2.5 ${error ? inputErr : inputOk}`} {...rest} />
     </Field>
   );
 }
@@ -93,7 +110,7 @@ type SelectProps = Omit<React.SelectHTMLAttributes<HTMLSelectElement>, "name"> &
 export function SelectField({ name, label, error, hint, required, placeholder, options, ...rest }: SelectProps) {
   return (
     <Field label={label} name={name} error={error} hint={hint} required={required}>
-      <select id={name} name={name} aria-invalid={!!error} className={`${inputBase} h-11 ${error ? inputErr : inputOk}`} {...rest}>
+      <select id={name} name={name} autoComplete="off" aria-invalid={!!error} className={`${inputBase} h-11 ${error ? inputErr : inputOk}`} {...rest}>
         {placeholder && <option value="">{placeholder}</option>}
         {options.map((o) => (
           <option key={o.value} value={o.value}>

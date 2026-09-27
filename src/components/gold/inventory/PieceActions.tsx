@@ -34,7 +34,7 @@ export function StatusChangeForm({ action, status }: { action: Action; status: P
   if (options.length === 0) return null;
   return (
     <Card title="Ubah Status">
-      <form action={formAction} className="space-y-4" noValidate>
+      <form autoComplete="off" action={formAction} className="space-y-4" noValidate>
         <FormAlert state={state} />
         <Success state={state} />
         <SelectField name="toStatus" label="Status baru" required placeholder="Pilih status" options={options} error={errors.toStatus} />
@@ -62,7 +62,7 @@ export function TransferForm({
   const [storeId, setStoreId] = useState(currentStoreId);
   return (
     <Card title="Pindah Lokasi / Outlet">
-      <form action={formAction} className="space-y-4" noValidate>
+      <form autoComplete="off" action={formAction} className="space-y-4" noValidate>
         <FormAlert state={state} />
         <Success state={state} />
         <SelectField name="toStoreId" label="Outlet tujuan" required options={stores} value={storeId} onChange={(e) => setStoreId(e.target.value)} error={errors.toStoreId} />
@@ -81,14 +81,15 @@ export function TransferForm({
   );
 }
 
-const moneyText = (v: string) => (Number(v) === 0 ? "" : v.replace(/\.00$/, ""));
+// PostgREST returns numeric columns as JSON numbers (not strings) — always stringify first
+const moneyText = (v: string | number | null | undefined) => (v === null || v === undefined || Number(v) === 0 ? "" : String(v).replace(/\.00$/, ""));
 
 export function DetailsForm({ action, item }: { action: Action; item: InventoryRow }) {
   const [state, formAction] = useActionState(action, null);
   const errors = fieldErrorsOf(state);
   return (
     <Card title="Data Barang">
-      <form action={formAction} className="space-y-4" noValidate>
+      <form autoComplete="off" action={formAction} className="space-y-4" noValidate>
         <FormAlert state={state} />
         <Success state={state} />
         <div className="grid gap-4 sm:grid-cols-2">
@@ -121,7 +122,7 @@ export function BulkTransferForm({
   const [storeId, setStoreId] = useState(stores[0]?.value ?? "");
   return (
     <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
-      <form action={formAction} className="space-y-5" noValidate>
+      <form autoComplete="off" action={formAction} className="space-y-5" noValidate>
         <FormAlert state={state} />
         {state?.success && (
           <div className="rounded-lg border border-success-200 bg-success-50 px-4 py-3 text-sm text-success-700 dark:border-success-500/30 dark:bg-success-500/10 dark:text-success-400">

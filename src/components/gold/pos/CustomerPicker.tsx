@@ -53,8 +53,8 @@ export default function CustomerPicker({
   if (draft) {
     return (
       <div className="space-y-2">
-        <input value={draft.name} onChange={(e) => setDraft({ ...draft, name: e.target.value })} placeholder="Nama" className={input} />
-        <input value={draft.phone} onChange={(e) => setDraft({ ...draft, phone: e.target.value })} placeholder="Nomor HP" inputMode="tel" className={input} />
+        <input autoComplete="off" value={draft.name} onChange={(e) => setDraft({ ...draft, name: e.target.value })} placeholder="Nama" className={input} />
+        <input autoComplete="off" value={draft.phone} onChange={(e) => setDraft({ ...draft, phone: e.target.value })} placeholder="Nomor HP" inputMode="tel" className={input} />
         <div className="flex gap-2">
           <button
             type="button"
@@ -83,7 +83,7 @@ export default function CustomerPicker({
 
   return (
     <div className="relative">
-      <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder={placeholder} className={input} />
+      <input autoComplete="off" value={query} onChange={(e) => setQuery(e.target.value)} placeholder={placeholder} className={input} />
       {results.length > 0 && (
         <ul className="absolute z-10 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg dark:border-gray-800 dark:bg-gray-900">
           {results.map((c) => (

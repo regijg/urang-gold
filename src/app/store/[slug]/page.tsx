@@ -58,8 +58,8 @@ export default async function CatalogPage({ params, searchParams }: Params) {
       </header>
 
       <div className="mx-auto max-w-6xl px-4 py-6">
-        <form method="get" className="mb-6 flex flex-col gap-3 sm:flex-row">
-          <input type="search" name="q" defaultValue={sp.q} placeholder="Cari perhiasan" className="h-11 flex-1 rounded-lg border border-gray-300 bg-white px-4 text-sm" />
+        <form autoComplete="off" method="get" className="mb-6 flex flex-col gap-3 sm:flex-row">
+          <input autoComplete="off" type="search" name="q" defaultValue={sp.q} placeholder="Cari perhiasan" className="h-11 flex-1 rounded-lg border border-gray-300 bg-white px-4 text-sm" />
           <select name="category" defaultValue={sp.category ?? ""} className="h-11 rounded-lg border border-gray-300 bg-white px-3 text-sm">
             <option value="">Semua kategori</option>
             {store.categories.map((c) => (

@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState, useTransition } from "react";
 import { formatGram, formatRupiah } from "@/lib/format";
 import type { PosItem } from "@/server/repositories/sales.repository";
 import { lookupBarcodeAction, searchItemsAction } from "@/app/(admin)/sales/actions";
+import RupiahInput from "@/components/gold/RupiahInput";
 
 export type CartLine = PosItem & { discount: string };
 
@@ -11,7 +12,6 @@ const input =
   "h-12 w-full rounded-xl border border-gray-300 bg-transparent px-4 text-base text-gray-800 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90";
 // text colour set on the card so every amount inside is readable in light and dark mode
 const card = "rounded-2xl border border-gray-200 bg-white p-4 text-gray-800 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90";
-const digits = (v: string) => v.replace(/[^\d]/g, "");
 
 /** Barcode scan + search + cart with per-line discount (POS and trade-in). */
 export default function CartPanel({
@@ -30,6 +30,8 @@ export default function CartPanel({
   const [barcode, setBarcode] = useState("");
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<PosItem[]>([]);
+  // feedback for the search box: never fail silently
+  const [searchState, setSearchState] = useState<{ kind: "idle" | "loading" | "empty" | "error"; text?: string }>({ kind: "idle" });
   const [, startTransition] = useTransition();
   const barcodeRef = useRef<HTMLInputElement>(null);
 
@@ -38,11 +40,20 @@ export default function CartPanel({
   useEffect(() => {
     if (query.trim().length < 2) {
       setResults([]);
+      setSearchState({ kind: "idle" });
       return;
     }
+    setSearchState({ kind: "loading" });
     const t = setTimeout(async () => {
       const r = await searchItemsAction(storeId, query);
-      if (r.success) setResults(r.data.filter((i) => !cart.some((c) => c.id === i.id)));
+      if (!r.success) {
+        setResults([]);
+        setSearchState({ kind: "error", text: r.message });
+        return;
+      }
+      const found = r.data.filter((i) => !cart.some((c) => c.id === i.id));
+      setResults(found);
+      setSearchState(found.length ? { kind: "idle" } : { kind: "empty" });
     }, 300);
     return () => clearTimeout(t);
   }, [query, storeId, cart]);
@@ -78,11 +89,19 @@ export default function CartPanel({
     <div className="space-y-4">
       <div className={card}>
         {title && <p className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">{title}</p>}
-        <form onSubmit={onScan}>
+        <form autoComplete="off" onSubmit={onScan}>
           <input ref={barcodeRef} value={barcode} onChange={(e) => setBarcode(e.target.value)} placeholder="Scan barcode lalu Enter" className={`${input} font-mono`} autoComplete="off" />
         </form>
         <div className="relative mt-3">
-          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Cari nama / barcode / no. seri" className={input} />
+          <input autoComplete="off" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Cari nama / barcode / no. seri" className={input} />
+          {searchState.kind === "loading" && <p className="mt-2 text-xs text-gray-500">Mencari...</p>}
+          {searchState.kind === "error" && <p className="mt-2 text-sm text-error-500">{searchState.text}</p>}
+          {searchState.kind === "empty" && (
+            <p className="mt-2 text-sm text-gray-500">
+              Tidak ada barang tersedia yang cocok di outlet ini. Pencarian hanya menampilkan stok fisik berstatus Tersedia
+              (sudah diinput lewat Daftar Stok → + Tambah Stok), bukan data produk.
+            </p>
+          )}
           {results.length > 0 && (
             <ul className="absolute z-10 mt-1 max-h-72 w-full overflow-auto rounded-xl border border-gray-200 bg-white shadow-lg dark:border-gray-800 dark:bg-gray-900">
               {results.map((r) => (
@@ -118,13 +137,15 @@ export default function CartPanel({
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="text-sm text-gray-600 dark:text-gray-300">{formatRupiah(l.price)}</span>
-                  <input
-                    value={l.discount}
-                    onChange={(e) => setCart((c) => c.map((x, idx) => (idx === i ? { ...x, discount: digits(e.target.value) } : x)))}
-                    placeholder="Diskon"
-                    inputMode="numeric"
-                    className="h-10 w-28 rounded-lg border border-gray-300 bg-transparent px-3 text-right text-sm dark:border-gray-700 dark:text-white"
-                  />
+                  <div className="w-36">
+                    <RupiahInput
+                      value={l.discount}
+                      onValueChange={(v) => setCart((c) => c.map((x, idx) => (idx === i ? { ...x, discount: v } : x)))}
+                      placeholder="Diskon"
+                      aria-label={`Diskon ${l.barcode}`}
+                      className="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 text-right text-sm dark:border-gray-700 dark:text-white"
+                    />
+                  </div>
                   <button type="button" onClick={() => setCart((c) => c.filter((x) => x.id !== l.id))} className="text-sm text-error-500 hover:underline">
                     Hapus
                   </button>

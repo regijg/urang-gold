@@ -24,7 +24,7 @@ export default function RangeFilter({
   hidden?: Record<string, string | undefined>;
 }) {
   return (
-    <form method="get" className="mb-5 flex flex-wrap items-end gap-2 print:hidden">
+    <form autoComplete="off" method="get" className="mb-5 flex flex-wrap items-end gap-2 print:hidden">
       {Object.entries(hidden).map(([k, v]) => (v ? <input key={k} type="hidden" name={k} value={v} /> : null))}
       <select name="range" defaultValue={range.preset} className={control}>
         {PRESETS.map((p) => (
@@ -33,8 +33,8 @@ export default function RangeFilter({
           </option>
         ))}
       </select>
-      <input type="date" name="from" defaultValue={range.fromDate} className={control} aria-label="Dari tanggal" />
-      <input type="date" name="to" defaultValue={range.toDate} className={control} aria-label="Sampai tanggal" />
+      <input autoComplete="off" type="date" name="from" defaultValue={range.fromDate} className={control} aria-label="Dari tanggal" />
+      <input autoComplete="off" type="date" name="to" defaultValue={range.toDate} className={control} aria-label="Sampai tanggal" />
       {stores && stores.length > 1 && (
         <select name="store" defaultValue={store ?? ""} className={control}>
           <option value="">Semua outlet</option>

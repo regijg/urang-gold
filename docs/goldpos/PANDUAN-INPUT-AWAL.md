@@ -10,7 +10,7 @@ membutuhkan data dari langkah sebelumnya.
 | 3 | Harga emas | Harga Emas | **Ya, sebelum jualan** |
 | 4 | Lokasi / baki | Inventory → Lokasi & Baki | Disarankan |
 | 5 | Produk (model barang) | Master Data → Produk | Ya |
-| 6 | Stok awal + label barcode | Inventory → Stok Masuk | Ya |
+| 6 | Stok awal + label barcode | Inventory → Daftar Stok → + Tambah Stok | Ya |
 | 7 | Supplier & customer | Master Data → Supplier, Customer | Bisa menyusul |
 | 8 | Akun staf | Pengguna | Jika ada staf |
 | 9 | Uji coba transaksi | Kasir (POS) | Disarankan |
@@ -70,7 +70,7 @@ Gunanya: mengetahui posisi barang dan melakukan stock opname per baki.
 
 ## 6. Stok Awal + Label Barcode
 
-**Inventory → Stok Masuk**:
+**Inventory → Daftar Stok → + Tambah Stok**:
 
 1. Pilih **produk**, **outlet**, dan **baki**.
 2. Isi **berat aktual tiap keping** — satu baris = satu barang fisik.
@@ -115,7 +115,7 @@ Jika semua lancar, toko siap dipakai.
 | Kapan | Kegiatan | Menu |
 |---|---|---|
 | Pagi, sebelum buka | Update harga emas | Harga Emas |
-| Saat ada barang datang | Catat pembelian (dari supplier) atau stok masuk | Pembelian / Inventory → Stok Masuk |
+| Saat ada barang datang | Catat pembelian (dari supplier) atau tambah stok | Pembelian / Inventory → + Tambah Stok |
 | Sepanjang hari | Penjualan, buyback, tukar tambah | Kasir, Buyback, Tukar Tambah |
 | Tutup toko | Cek penjualan & kas per metode | Laporan → Pembayaran & Arus Kas |
 | Berkala (mingguan/bulanan) | Stock opname per baki/outlet | Inventory → Stock Opname |

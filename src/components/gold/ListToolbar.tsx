@@ -17,9 +17,9 @@ export default function ListToolbar({ q, placeholder = "Cari...", filters = [], 
     "h-11 rounded-lg border border-gray-300 bg-transparent px-4 text-sm text-gray-800 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90";
 
   return (
-    <form method="get" className="mb-4 flex flex-col gap-3 sm:flex-row">
+    <form autoComplete="off" method="get" className="mb-4 flex flex-col gap-3 sm:flex-row">
       {Object.entries(hidden).map(([k, v]) => (v ? <input key={k} type="hidden" name={k} value={v} /> : null))}
-      {showSearch && <input type="search" name="q" defaultValue={q} placeholder={placeholder} className={`${control} flex-1`} />}
+      {showSearch && <input autoComplete="off" type="search" name="q" defaultValue={q} placeholder={placeholder} className={`${control} flex-1`} />}
       {filters.map((f) => (
         <select key={f.name} name={f.name} defaultValue={f.value ?? ""} className={`${control} ${showSearch ? "" : "flex-1"}`}>
           <option value="">{f.allLabel}</option>

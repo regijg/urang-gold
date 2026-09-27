@@ -2,7 +2,6 @@ import DeleteButton from "@/components/gold/DeleteButton";
 import PageHeader from "@/components/gold/PageHeader";
 import ProductForm from "@/components/gold/master/ProductForm";
 import { formatGram, formatRupiah } from "@/lib/format";
-import { productPhotoUrl } from "@/lib/validation/image";
 import { loadPage, requirePagePermission } from "@/server/page-guard";
 import { loadProductFormOptions } from "@/server/services/product-options";
 import { goldRateService } from "@/server/services/gold-rate.service";
@@ -44,7 +43,6 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
           categories={categories}
           purities={purities}
           initial={product}
-          photoUrl={productPhotoUrl(product.photo_path)}
         />
         <DeleteButton
           action={deleteProductAction.bind(null, id)}

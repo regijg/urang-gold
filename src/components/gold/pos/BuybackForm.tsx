@@ -104,7 +104,7 @@ export default function BuybackForm({
           <p className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Pembayaran ke customer</p>
           <PaymentEditor payments={payments} setPayments={setPayments} target={total} methods={["CASH", "BANK_TRANSFER"]} />
           {diff !== "0" && <p className="mt-2 text-xs text-warning-600">Selisih {formatRupiah(diff.replace("-", ""))} — pembayaran harus sama dengan total.</p>}
-          <input value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Catatan (opsional)" className="mt-3 h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 text-sm dark:border-gray-700 dark:text-white" />
+          <input autoComplete="off" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Catatan (opsional)" className="mt-3 h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 text-sm dark:border-gray-700 dark:text-white" />
         </div>
         {error && <p className="rounded-lg bg-error-50 px-4 py-2 text-sm text-error-600 dark:bg-error-500/10 dark:text-error-400">{error}</p>}
         <button type="button" onClick={submit} disabled={pending || total === "0" || diff !== "0"} className="h-14 w-full rounded-xl bg-brand-500 text-lg font-semibold text-white hover:bg-brand-600 disabled:opacity-50">

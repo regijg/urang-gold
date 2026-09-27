@@ -6,6 +6,7 @@ import { suggestPurityPrice } from "@/lib/gold-rate";
 import { formatPercent, formatRupiah } from "@/lib/format";
 import type { CurrentRateRow } from "@/server/repositories/gold-rate.repository";
 import { FormAlert, SubmitButton, fieldErrorsOf } from "./form";
+import RupiahInput from "@/components/gold/RupiahInput";
 
 type Props = {
   rows: CurrentRateRow[];
@@ -35,7 +36,7 @@ export default function GoldRatesForm({ rows, action }: Props) {
   }
 
   return (
-    <form action={formAction} className="space-y-5">
+    <form autoComplete="off" action={formAction} className="space-y-5">
       <FormAlert state={state} />
       {state?.success && (
         <div className="rounded-lg border border-success-200 bg-success-50 px-4 py-3 text-sm text-success-700 dark:border-success-500/30 dark:bg-success-500/10 dark:text-success-400">
@@ -48,11 +49,11 @@ export default function GoldRatesForm({ rows, action }: Props) {
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
           <label className="flex-1 text-xs text-gray-500">
             Harga beli / gram
-            <input className={input} inputMode="numeric" value={baseBuy} onChange={(e) => setBaseBuy(e.target.value)} placeholder="2.200.000" />
+            <RupiahInput className={input} value={baseBuy} onValueChange={setBaseBuy} placeholder="2.200.000" />
           </label>
           <label className="flex-1 text-xs text-gray-500">
             Harga jual / gram
-            <input className={input} inputMode="numeric" value={baseSell} onChange={(e) => setBaseSell(e.target.value)} placeholder="2.350.000" />
+            <RupiahInput className={input} value={baseSell} onValueChange={setBaseSell} placeholder="2.350.000" />
           </label>
           <button type="button" onClick={fillFromBase} className="h-10 rounded-lg border border-gray-300 px-4 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-white/5">
             Hitung × persentase kadar
@@ -84,11 +85,11 @@ export default function GoldRatesForm({ rows, action }: Props) {
                     {r.sell_price ? `${formatRupiah(r.buy_price)} / ${formatRupiah(r.sell_price)}` : <span className="text-gray-400">Belum diatur</span>}
                   </td>
                   <td className="px-4 py-3">
-                    <input name={buyKey} className={input} inputMode="numeric" value={values[buyKey] ?? ""} onChange={(e) => set(buyKey, e.target.value)} aria-invalid={!!errors[buyKey]} />
+                    <RupiahInput name={buyKey} className={input} value={values[buyKey] ?? ""} onValueChange={(v) => set(buyKey, v)} aria-invalid={!!errors[buyKey]} />
                     {errors[buyKey] && <p className="mt-1 text-xs text-error-500">{errors[buyKey]}</p>}
                   </td>
                   <td className="px-4 py-3">
-                    <input name={sellKey} className={input} inputMode="numeric" value={values[sellKey] ?? ""} onChange={(e) => set(sellKey, e.target.value)} aria-invalid={!!errors[sellKey]} />
+                    <RupiahInput name={sellKey} className={input} value={values[sellKey] ?? ""} onValueChange={(v) => set(sellKey, v)} aria-invalid={!!errors[sellKey]} />
                     {errors[sellKey] && <p className="mt-1 text-xs text-error-500">{errors[sellKey]}</p>}
                   </td>
                 </tr>

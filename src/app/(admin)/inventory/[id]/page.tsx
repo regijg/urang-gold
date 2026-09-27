@@ -37,7 +37,11 @@ export default async function InventoryItemPage({ params }: { params: Promise<{ 
 
   return (
     <>
-      <PageHeader title={item.name} description={item.barcode} back={{ href: "/inventory", label: "Inventory" }} />
+      <PageHeader
+        title={item.name}
+        description={`Barcode ${item.barcode}${item.product ? ` · SKU produk ${item.product.sku}` : ""}`}
+        back={{ href: "/inventory", label: "Daftar Stok" }}
+      />
       <div className="mb-4 flex gap-4 text-sm">
         <Link href={`/inventory/labels?ids=${item.id}`} className="font-medium text-brand-500 hover:underline">Cetak label</Link>
         {item.product && <Link href={`/products/${item.product.id}`} className="font-medium text-brand-500 hover:underline">Produk {item.product.sku}</Link>}

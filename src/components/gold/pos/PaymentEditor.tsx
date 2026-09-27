@@ -3,10 +3,10 @@
 import React from "react";
 import { PAYMENT_LABELS, PAYMENT_METHODS } from "@/lib/payments";
 import { subRupiah, sumRupiah } from "@/lib/validation/sales";
+import RupiahInput from "@/components/gold/RupiahInput";
 
 export type PaymentRow = { method: string; amount: string; reference: string };
 
-const digits = (v: string) => v.replace(/[^\d]/g, "");
 const field = "h-11 rounded-lg border border-gray-300 bg-transparent px-3 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white";
 
 /** Split-payment editor. `target` is the amount to cover ("Uang pas" fills the first row). */
@@ -36,10 +36,12 @@ export default function PaymentEditor({
                   </option>
                 ))}
               </select>
-              <input value={p.amount} onChange={(e) => set(i, { amount: digits(e.target.value) })} inputMode="numeric" placeholder="Nominal" className={`${field} w-36 text-right`} />
+              <div className="w-44">
+                <RupiahInput value={p.amount} onValueChange={(v) => set(i, { amount: v })} placeholder="Nominal" aria-label="Nominal pembayaran" className={`${field} w-full text-right`} />
+              </div>
             </div>
             {p.method !== "CASH" && (
-              <input value={p.reference} onChange={(e) => set(i, { reference: e.target.value })} placeholder="No. referensi (opsional)" className={`${field} h-10 w-full`} />
+              <input autoComplete="off" value={p.reference} onChange={(e) => set(i, { reference: e.target.value })} placeholder="No. referensi (opsional)" className={`${field} h-10 w-full`} />
             )}
             {payments.length > 1 && (
               <button type="button" onClick={() => setPayments((ps) => ps.filter((_, idx) => idx !== i))} className="text-xs text-error-500">

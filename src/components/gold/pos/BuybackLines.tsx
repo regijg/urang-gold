@@ -1,11 +1,12 @@
 "use client";
 
 import React, { useState, useTransition } from "react";
-import { formatRupiah } from "@/lib/format";
+import { formatRupiah, groupThousands } from "@/lib/format";
 import { previewBuybackLine } from "@/lib/validation/buyback";
 import { dbRupiah } from "@/lib/validation/common";
 import { sumRupiah } from "@/lib/validation/sales";
 import { findSoldPieceAction } from "@/app/(admin)/buybacks/actions";
+import RupiahInput from "@/components/gold/RupiahInput";
 
 export type BuybackPurity = { purity_id: string; code: string; buy_price: string | null };
 export type BuybackLine = {
@@ -66,7 +67,6 @@ const cell =
   "h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 text-sm text-gray-800 focus:border-brand-300 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90";
 // text colour set on the card so every amount inside is readable in light and dark mode
 const card = "rounded-2xl border border-gray-200 bg-white p-4 text-gray-800 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90";
-const digits = (v: string) => v.replace(/[^\d]/g, "");
 
 /** Editor for items bought from the customer (buyback and trade-in). */
 export default function BuybackLines({
@@ -118,8 +118,8 @@ export default function BuybackLines({
 
   return (
     <div className="space-y-4">
-      <form onSubmit={addSoldPiece} className={card}>
-        <input value={barcode} onChange={(e) => setBarcode(e.target.value)} placeholder="Scan barcode barang yang dulu dibeli di toko ini (opsional)" className={`${cell} font-mono`} />
+      <form autoComplete="off" onSubmit={addSoldPiece} className={card}>
+        <input autoComplete="off" value={barcode} onChange={(e) => setBarcode(e.target.value)} placeholder="Scan barcode barang yang dulu dibeli di toko ini (opsional)" className={`${cell} font-mono`} />
       </form>
 
       {lines.map((l, i) => {
@@ -141,7 +141,7 @@ export default function BuybackLines({
                 <>
                   <label className="text-xs text-gray-500">
                     Nama barang
-                    <input value={l.name} onChange={(e) => setLine(l.key, { name: e.target.value })} placeholder="Kalung rantai" className={cell} />
+                    <input autoComplete="off" value={l.name} onChange={(e) => setLine(l.key, { name: e.target.value })} placeholder="Kalung rantai" className={cell} />
                     {err("name") && <span className="text-error-500">{err("name")}</span>}
                   </label>
                   <label className="text-xs text-gray-500">
@@ -172,20 +172,20 @@ export default function BuybackLines({
               )}
               <label className="text-xs text-gray-500">
                 Berat total (gram)
-                <input value={l.grossWeight} onChange={(e) => setLine(l.key, { grossWeight: e.target.value })} inputMode="decimal" placeholder="3,21" className={cell} />
+                <input autoComplete="off" value={l.grossWeight} onChange={(e) => setLine(l.key, { grossWeight: e.target.value })} inputMode="decimal" placeholder="3,21" className={cell} />
                 {err("grossWeight") && <span className="text-error-500">{err("grossWeight")}</span>}
               </label>
               <label className="text-xs text-gray-500">
                 Berat batu (gram)
-                <input value={l.stoneWeight} onChange={(e) => setLine(l.key, { stoneWeight: e.target.value })} inputMode="decimal" placeholder="0" className={cell} />
+                <input autoComplete="off" value={l.stoneWeight} onChange={(e) => setLine(l.key, { stoneWeight: e.target.value })} inputMode="decimal" placeholder="0" className={cell} />
               </label>
               <label className="text-xs text-gray-500">
                 Harga / gram {canOverridePrice ? "" : "(maks. harga buyback)"}
-                <input value={l.pricePerGram} onChange={(e) => setLine(l.key, { pricePerGram: digits(e.target.value) })} inputMode="numeric" placeholder={rate ? formatRupiah(rate) : "-"} className={cell} />
+                <RupiahInput value={l.pricePerGram} onValueChange={(v) => setLine(l.key, { pricePerGram: v })} placeholder={rate ? groupThousands(rate) : "-"} className={cell} />
               </label>
               <label className="text-xs text-gray-500">
                 Potongan
-                <input value={l.deduction} onChange={(e) => setLine(l.key, { deduction: digits(e.target.value) })} inputMode="numeric" placeholder="0" className={cell} />
+                <RupiahInput value={l.deduction} onValueChange={(v) => setLine(l.key, { deduction: v })} placeholder="0" className={cell} />
               </label>
             </div>
             {pv && (

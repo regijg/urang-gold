@@ -16,7 +16,7 @@ export default function CategoryForm({ action, initial }: Props) {
 
   return (
     <FormCard>
-      <form action={formAction} className="space-y-5" noValidate>
+      <form autoComplete="off" action={formAction} className="space-y-5" noValidate>
         <FormAlert state={state} />
         <div className="grid gap-5 sm:grid-cols-2">
           <TextField name="code" label="Kode" required maxLength={6} defaultValue={initial?.code} placeholder="RNG" hint="Dipakai sebagai awalan SKU" error={errors.code} className="uppercase" />

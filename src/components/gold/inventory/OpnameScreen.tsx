@@ -41,9 +41,9 @@ export function OpnameCounter({ opnameId, canSubmit }: { opnameId: string; canSu
 
   return (
     <div className="space-y-3 rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
-      <form onSubmit={scan} className="flex flex-col gap-3 sm:flex-row">
+      <form autoComplete="off" onSubmit={scan} className="flex flex-col gap-3 sm:flex-row">
         <input ref={barcodeRef} autoFocus value={barcode} onChange={(e) => setBarcode(e.target.value)} placeholder="Scan barcode" className={`${input} flex-1 font-mono`} autoComplete="off" />
-        <input value={weight} onChange={(e) => setWeight(e.target.value)} inputMode="decimal" placeholder="Berat timbang (opsional)" className={`${input} sm:w-56`} />
+        <input autoComplete="off" value={weight} onChange={(e) => setWeight(e.target.value)} inputMode="decimal" placeholder="Berat timbang (opsional)" className={`${input} sm:w-56`} />
         <button type="submit" disabled={pending} className="h-12 rounded-xl bg-brand-500 px-6 font-semibold text-white disabled:opacity-50">
           Hitung
         </button>
@@ -103,7 +103,7 @@ export function OpnameReviewForm({
   const [state, formAction] = useActionState(action, null);
   if (state?.success) return <p className="rounded-lg bg-success-50 px-4 py-3 text-sm text-success-700">{state.message}</p>;
   return (
-    <form action={formAction} className="space-y-3 rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
+    <form autoComplete="off" action={formAction} className="space-y-3 rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
       <p className="text-sm font-semibold text-gray-900 dark:text-white">Persetujuan</p>
       <FormAlert state={state} />
       <TextAreaField name="notes" label="Catatan" />
@@ -141,7 +141,7 @@ export function StartOpnameForm({
   const [storeId, setStoreId] = useState(stores[0]?.value ?? "");
   const sel = "h-11 w-full rounded-lg border border-gray-300 bg-transparent px-3 text-sm dark:border-gray-700 dark:text-white";
   return (
-    <form action={formAction} className="mb-6 space-y-3 rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
+    <form autoComplete="off" action={formAction} className="mb-6 space-y-3 rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
       <p className="text-sm font-semibold text-gray-900 dark:text-white">Mulai stock opname</p>
       <FormAlert state={state} />
       <div className="grid gap-3 sm:grid-cols-3">
@@ -152,7 +152,7 @@ export function StartOpnameForm({
           <option value="">Semua lokasi</option>
           {locations.filter((l) => l.store_id === storeId).map((l) => <option key={l.id} value={l.id}>{l.code} — {l.name}</option>)}
         </select>
-        <input name="notes" placeholder="Catatan (opsional)" className={sel} />
+        <input autoComplete="off" name="notes" placeholder="Catatan (opsional)" className={sel} />
       </div>
       <SubmitButton>Mulai</SubmitButton>
     </form>

@@ -27,7 +27,7 @@ export default function ContactForm({ kind, action, initial }: Props) {
 
   return (
     <FormCard>
-      <form action={formAction} className="space-y-5" noValidate>
+      <form autoComplete="off" action={formAction} className="space-y-5" noValidate>
         <FormAlert state={state} />
         <div className="grid gap-5 sm:grid-cols-2">
           <TextField

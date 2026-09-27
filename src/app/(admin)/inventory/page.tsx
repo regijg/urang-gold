@@ -46,7 +46,7 @@ export default async function InventoryPage({ searchParams }: { searchParams: Pr
       <PageHeader
         title="Inventory"
         description="Stok fisik per keping."
-        action={can("inventory.manage") ? { href: "/inventory/new", label: "Stok Masuk" } : null}
+        action={can("inventory.manage") ? { href: "/inventory/new", label: "+ Tambah Stok" } : null}
       />
       <div className="mb-4 flex flex-wrap gap-4 text-sm">
         {can("inventory.view") && <Link href="/inventory/movements" className="font-medium text-brand-500 hover:underline">Riwayat Mutasi</Link>}
@@ -88,7 +88,10 @@ export default async function InventoryPage({ searchParams }: { searchParams: Pr
             cell: (r) => (
               <div>
                 <Link href={`/inventory/${r.id}`} className="font-medium text-brand-500 hover:underline">{r.name}</Link>
-                <p className="font-mono text-xs text-gray-500">{r.barcode}</p>
+                <p className="font-mono text-xs text-gray-500">
+                  {r.barcode}
+                  {r.product && <span className="ml-2 font-sans text-gray-400">· SKU {r.product.sku}</span>}
+                </p>
               </div>
             ),
           },

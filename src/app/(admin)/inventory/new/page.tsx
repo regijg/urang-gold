@@ -18,10 +18,26 @@ export default async function ReceiveStockPage({ searchParams }: { searchParams:
 
   return (
     <>
-      <PageHeader title="Stok Masuk" description="Input stok awal atau barang masuk (non-pembelian supplier)." back={{ href: "/inventory", label: "Inventory" }} />
+      <PageHeader
+        title="Tambah Stok"
+        description="Catat barang fisik yang masuk ke toko (stok awal, titipan). Barang dari supplier dicatat lewat menu Pembelian."
+        back={{ href: "/inventory", label: "Daftar Stok" }}
+      />
       <ReceiveForm
         action={receiveStockAction}
-        products={products.rows.map((p) => ({ value: p.id, label: `${p.sku} — ${p.name} (${p.purity?.code ?? "-"})` }))}
+        products={products.rows.map((p) => ({
+          id: p.id,
+          sku: p.sku,
+          name: p.name,
+          category: p.category?.name ?? "-",
+          purity: p.purity?.code ?? "-",
+          gross_weight: String(p.gross_weight),
+          stone_weight: String(p.stone_weight),
+          cost_price: String(p.cost_price),
+          labor_cost: String(p.labor_cost),
+          stone_price: String(p.stone_price),
+          margin_amount: String(p.margin_amount),
+        }))}
         stores={stores.map((s) => ({ value: s.id, label: s.name }))}
         locations={locations}
         defaultProductId={product}

@@ -86,7 +86,22 @@ export default function TradeInForm({
             Cetak nota beli
           </Link>
         </div>
-        <a href={waLink(customer?.phone, `Nota tukar tambah ${done.trade_in_number}: ${notaUrl}`)} target="_blank" rel="noreferrer" className="mt-3 block rounded-lg border border-success-300 py-2.5 text-sm text-success-700">
+        <a href={waLink(
+            customer?.phone,
+            [
+              `*${stores.find((st) => st.id === storeId)?.name ?? ""}*`,
+              `Tukar tambah: ${done.trade_in_number}`,
+              "",
+              `Nilai barang lama: ${formatRupiah(oldValue)}`,
+              `Harga barang baru: ${formatRupiah(newTotal)}`,
+              `*${b > BigInt(0) ? "Dibayar customer" : b < BigInt(0) ? "Dibayar toko" : "Selisih"}: ${formatRupiah(done.balance.replace("-", ""))}*`,
+              "",
+              "Lihat nota lengkap:",
+              notaUrl,
+              "",
+              "Terima kasih 🙏",
+            ].join("\n")
+          )} target="_blank" rel="noreferrer" className="mt-3 block rounded-lg border border-success-300 py-2.5 text-sm text-success-700">
           Kirim nota via WhatsApp
         </a>
         <button type="button" onClick={() => window.location.reload()} className="mt-6 w-full rounded-xl bg-brand-500 py-3 font-semibold text-white">
@@ -136,7 +151,7 @@ export default function TradeInForm({
             <PaymentEditor payments={payments} setPayments={setPayments} target={absBalance} methods={customerPays ? undefined : ["CASH", "BANK_TRANSFER"]} />
           </div>
         )}
-        <input value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Catatan (opsional)" className="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 text-sm dark:border-gray-700 dark:text-white" />
+        <input autoComplete="off" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Catatan (opsional)" className="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 text-sm dark:border-gray-700 dark:text-white" />
         {message && <p className="rounded-lg bg-error-50 px-4 py-2 text-sm text-error-600 dark:bg-error-500/10 dark:text-error-400">{message.text}</p>}
         <button type="button" onClick={submit} disabled={pending || cart.length === 0 || oldValue === "0" || !settleOk} className="h-14 w-full rounded-xl bg-brand-500 text-lg font-semibold text-white disabled:opacity-50">
           {pending ? "Memproses..." : "Simpan Tukar Tambah"}
