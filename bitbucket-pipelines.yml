@@ -1,0 +1,103 @@
+image: node:20
+
+pipelines:
+  branches:
+    develop:
+      - step:
+          name: Build and Push NestJS Docker Image to ECR
+          image: node:20
+          services:
+            - docker
+          script:
+            - export AWS_REGION=$AWS_REGION
+            - export ECR_REPO=$ECR_REPO
+            - export IMAGE_TAG=latest
+            - export ACCOUNT_ID=$ACCOUNT_ID
+
+            # Install AWS CLI v2
+            - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            - unzip awscliv2.zip
+            - ./aws/install
+            - npm install
+            # Replace environment variable in .env.local
+            - sed -i 's|NEXT_PUBLIC_API_BASE_URL_ENV|https://api.umrohan.com/stg/|g' .env.local
+            - npm run build
+
+            # Login to ECR
+            - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+
+            # Build and push Docker image
+            - docker build -t $ECR_REPO:$BITBUCKET_COMMIT .
+            - docker tag $ECR_REPO:$BITBUCKET_COMMIT $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$BITBUCKET_COMMIT
+            - docker push $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$BITBUCKET_COMMIT
+
+      - step:
+          name: Build and Deploy to Server
+          caches:
+            - node
+          script:
+            - pipe: atlassian/ssh-run:0.6.1
+              variables:
+                SSH_USER: 'ubuntu'
+                SERVER: $SSH_HOSTNAME_DEV
+                MODE: 'command'
+                COMMAND: >
+                  mkdir -p ~/.aws &&
+                  echo "[default]" > ~/.aws/credentials &&
+                  echo "aws_access_key_id=$AWS_ACCESS_KEY_ID" >> ~/.aws/credentials &&
+                  echo "aws_secret_access_key=$AWS_SECRET_ACCESS_KEY" >> ~/.aws/credentials &&
+                  echo "[default]" > ~/.aws/config &&
+                  echo "region=$AWS_REGION" >> ~/.aws/config &&
+                  cd /home/ubuntu/umrohan-agent-fe-stg &&
+                  aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com &&
+                  sh build.sh $BITBUCKET_COMMIT $AWS_REGION $ACCOUNT_ID
+
+    master:
+      - step:
+          name: Build and Push NestJS Docker Image to ECR
+          image: node:20
+          services:
+            - docker
+          script:
+            - export AWS_REGION=$AWS_REGION
+            - export ECR_REPO=$ECR_REPO
+            - export IMAGE_TAG=latest
+            - export ACCOUNT_ID=$ACCOUNT_ID
+
+            # Install AWS CLI v2
+            - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            - unzip awscliv2.zip
+            - ./aws/install
+            - npm install
+            # Replace environment variable in .env.local
+            - sed -i 's|NEXT_PUBLIC_API_BASE_URL_ENV|https://api.umrohan.com/prd/|g' .env.local
+            - npm run build
+
+            # Login to ECR
+            - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+
+            # Build and push Docker image
+            - docker build -t $ECR_REPO:$BITBUCKET_COMMIT .
+            - docker tag $ECR_REPO:$BITBUCKET_COMMIT $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$BITBUCKET_COMMIT
+            - docker push $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$BITBUCKET_COMMIT
+
+      - step:
+          name: Build and Deploy to Server
+          caches:
+            - node
+          script:
+            - pipe: atlassian/ssh-run:0.6.1
+              variables:
+                SSH_USER: 'ubuntu'
+                SERVER: $SSH_HOSTNAME_DEV
+                MODE: 'command'
+                COMMAND: >
+                  mkdir -p ~/.aws &&
+                  echo "[default]" > ~/.aws/credentials &&
+                  echo "aws_access_key_id=$AWS_ACCESS_KEY_ID" >> ~/.aws/credentials &&
+                  echo "aws_secret_access_key=$AWS_SECRET_ACCESS_KEY" >> ~/.aws/credentials &&
+                  echo "[default]" > ~/.aws/config &&
+                  echo "region=$AWS_REGION" >> ~/.aws/config &&
+                  cd /home/ubuntu/umrohan-agent-fe-prd &&
+                  aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com &&
+                  sh build.sh $BITBUCKET_COMMIT $AWS_REGION $ACCOUNT_ID
