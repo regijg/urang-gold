@@ -23,8 +23,8 @@ export default async function TradeInDetailPage({ params }: { params: Promise<{ 
       <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 text-sm dark:border-gray-800 dark:bg-gray-900">
           <dl className="space-y-2">
-            <div className="flex justify-between"><dt className="text-gray-500">Nilai barang lama (buyback)</dt><dd><Link href={`/buybacks/${ti.buyback_id}`} className="text-brand-500 hover:underline">{formatRupiah(ti.trade_in_value)}</Link></dd></div>
-            <div className="flex justify-between"><dt className="text-gray-500">Harga barang baru (penjualan)</dt><dd><Link href={`/sales/${ti.sale_id}`} className="text-brand-500 hover:underline">{formatRupiah(ti.sale_total)}</Link></dd></div>
+            <div className="flex justify-between"><dt className="text-gray-500">Nilai barang lama (buyback)</dt><dd className="font-medium text-gray-800 dark:text-white/90"><Link href={`/buybacks/${ti.buyback_id}`} className="text-brand-500 hover:underline">{formatRupiah(ti.trade_in_value)}</Link></dd></div>
+            <div className="flex justify-between"><dt className="text-gray-500">Harga barang baru (penjualan)</dt><dd className="font-medium text-gray-800 dark:text-white/90"><Link href={`/sales/${ti.sale_id}`} className="text-brand-500 hover:underline">{formatRupiah(ti.sale_total)}</Link></dd></div>
             <div className="flex justify-between text-base font-semibold text-gray-900 dark:text-white">
               <dt>{b > BigInt(0) ? "Dibayar customer" : b < BigInt(0) ? "Dibayar toko" : "Selisih"}</dt>
               <dd>{formatRupiah(ti.balance.replace("-", ""))}</dd>

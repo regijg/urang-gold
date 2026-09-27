@@ -26,9 +26,9 @@ export default async function SettingsPage() {
             <TenantProfileForm action={renameTenantAction} name={tenant.name} />
             <dl className="space-y-2 text-sm">
               <div className="flex justify-between"><dt className="text-gray-500">Kode toko (slug)</dt><dd className="font-mono">{tenant.slug}</dd></div>
-              <div className="flex justify-between"><dt className="text-gray-500">Paket</dt><dd>{tenant.plan}</dd></div>
-              <div className="flex justify-between"><dt className="text-gray-500">Status</dt><dd>{tenant.status === "ACTIVE" ? "Aktif" : tenant.status}</dd></div>
-              <div className="flex justify-between"><dt className="text-gray-500">Terdaftar</dt><dd>{formatDateTime(tenant.created_at)}</dd></div>
+              <div className="flex justify-between"><dt className="text-gray-500">Paket</dt><dd className="font-medium text-gray-800 dark:text-white/90">{tenant.plan}</dd></div>
+              <div className="flex justify-between"><dt className="text-gray-500">Status</dt><dd className="font-medium text-gray-800 dark:text-white/90">{tenant.status === "ACTIVE" ? "Aktif" : tenant.status}</dd></div>
+              <div className="flex justify-between"><dt className="text-gray-500">Terdaftar</dt><dd className="font-medium text-gray-800 dark:text-white/90">{formatDateTime(tenant.created_at)}</dd></div>
               <p className="pt-2 text-xs text-gray-400">
                 Alamat, telepon, dan WhatsApp diatur per outlet di menu <Link href="/stores" className="text-brand-500 hover:underline">Outlet</Link>.
               </p>

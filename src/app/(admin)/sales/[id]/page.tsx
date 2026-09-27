@@ -68,12 +68,12 @@ export default async function SaleDetailPage({ params }: { params: Promise<{ id:
         <div className="space-y-4">
           <div className="rounded-2xl border border-gray-200 bg-white p-5 text-sm dark:border-gray-800 dark:bg-gray-900">
             <dl className="space-y-1">
-              <div className="flex justify-between"><dt className="text-gray-500">Customer</dt><dd>{sale.customer?.name ?? "-"}</dd></div>
-              <div className="flex justify-between"><dt className="text-gray-500">Subtotal</dt><dd>{formatRupiah(sale.subtotal)}</dd></div>
-              <div className="flex justify-between"><dt className="text-gray-500">Diskon</dt><dd>-{formatRupiah(sale.discount_total)}</dd></div>
+              <div className="flex justify-between"><dt className="text-gray-500">Customer</dt><dd className="font-medium text-gray-800 dark:text-white/90">{sale.customer?.name ?? "-"}</dd></div>
+              <div className="flex justify-between"><dt className="text-gray-500">Subtotal</dt><dd className="font-medium text-gray-800 dark:text-white/90">{formatRupiah(sale.subtotal)}</dd></div>
+              <div className="flex justify-between"><dt className="text-gray-500">Diskon</dt><dd className="font-medium text-gray-800 dark:text-white/90">-{formatRupiah(sale.discount_total)}</dd></div>
               <div className="flex justify-between text-base font-semibold text-gray-900 dark:text-white"><dt>Total</dt><dd>{formatRupiah(sale.total)}</dd></div>
-              <div className="flex justify-between"><dt className="text-gray-500">Dibayar</dt><dd>{formatRupiah(sale.paid_total)}</dd></div>
-              <div className="flex justify-between"><dt className="text-gray-500">Kembalian</dt><dd>{formatRupiah(sale.change_amount)}</dd></div>
+              <div className="flex justify-between"><dt className="text-gray-500">Dibayar</dt><dd className="font-medium text-gray-800 dark:text-white/90">{formatRupiah(sale.paid_total)}</dd></div>
+              <div className="flex justify-between"><dt className="text-gray-500">Kembalian</dt><dd className="font-medium text-gray-800 dark:text-white/90">{formatRupiah(sale.change_amount)}</dd></div>
             </dl>
             {sale.notes && <p className="mt-3 text-gray-500">Catatan: {sale.notes}</p>}
           </div>

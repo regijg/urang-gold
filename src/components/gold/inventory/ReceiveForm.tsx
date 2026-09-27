@@ -173,12 +173,12 @@ export default function ReceiveForm({ action, products, stores, locations, defau
               </button>
             </div>
             <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1 text-sm sm:grid-cols-3">
-              <div><dt className="text-xs text-gray-500">Berat standar</dt><dd>{formatGram(product.gross_weight)}</dd></div>
-              <div><dt className="text-xs text-gray-500">Berat batu</dt><dd>{formatGram(product.stone_weight)}</dd></div>
-              <div><dt className="text-xs text-gray-500">Harga modal</dt><dd>{formatRupiah(product.cost_price)}</dd></div>
-              <div><dt className="text-xs text-gray-500">Ongkos</dt><dd>{formatRupiah(product.labor_cost)}</dd></div>
-              <div><dt className="text-xs text-gray-500">Harga batu</dt><dd>{formatRupiah(product.stone_price)}</dd></div>
-              <div><dt className="text-xs text-gray-500">Margin</dt><dd>{formatRupiah(product.margin_amount)}</dd></div>
+              <div><dt className="text-xs text-gray-500">Berat standar</dt><dd className="font-medium text-gray-800 dark:text-white/90">{formatGram(product.gross_weight)}</dd></div>
+              <div><dt className="text-xs text-gray-500">Berat batu</dt><dd className="font-medium text-gray-800 dark:text-white/90">{formatGram(product.stone_weight)}</dd></div>
+              <div><dt className="text-xs text-gray-500">Harga modal</dt><dd className="font-medium text-gray-800 dark:text-white/90">{formatRupiah(product.cost_price)}</dd></div>
+              <div><dt className="text-xs text-gray-500">Ongkos</dt><dd className="font-medium text-gray-800 dark:text-white/90">{formatRupiah(product.labor_cost)}</dd></div>
+              <div><dt className="text-xs text-gray-500">Harga batu</dt><dd className="font-medium text-gray-800 dark:text-white/90">{formatRupiah(product.stone_price)}</dd></div>
+              <div><dt className="text-xs text-gray-500">Margin</dt><dd className="font-medium text-gray-800 dark:text-white/90">{formatRupiah(product.margin_amount)}</dd></div>
             </dl>
           </div>
         ) : (

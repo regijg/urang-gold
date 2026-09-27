@@ -27,11 +27,11 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
           <p className="mb-3 font-semibold text-gray-900 dark:text-white">Estimasi harga jual (harga emas saat ini, berat standar)</p>
           {quote ? (
             <dl className="grid gap-2 sm:grid-cols-2">
-              <div className="flex justify-between"><dt className="text-gray-500">Harga emas {product.purity?.code} / gram</dt><dd>{formatRupiah(quote.sell_rate)}</dd></div>
-              <div className="flex justify-between"><dt className="text-gray-500">Nilai emas ({formatGram(product.gold_weight)})</dt><dd>{formatRupiah(quote.gold_value)}</dd></div>
-              <div className="flex justify-between"><dt className="text-gray-500">Ongkos produksi</dt><dd>{formatRupiah(product.labor_cost)}</dd></div>
-              <div className="flex justify-between"><dt className="text-gray-500">Harga batu</dt><dd>{formatRupiah(product.stone_price)}</dd></div>
-              <div className="flex justify-between"><dt className="text-gray-500">Margin</dt><dd>{formatRupiah(product.margin_amount)}</dd></div>
+              <div className="flex justify-between"><dt className="text-gray-500">Harga emas {product.purity?.code} / gram</dt><dd className="font-medium text-gray-800 dark:text-white/90">{formatRupiah(quote.sell_rate)}</dd></div>
+              <div className="flex justify-between"><dt className="text-gray-500">Nilai emas ({formatGram(product.gold_weight)})</dt><dd className="font-medium text-gray-800 dark:text-white/90">{formatRupiah(quote.gold_value)}</dd></div>
+              <div className="flex justify-between"><dt className="text-gray-500">Ongkos produksi</dt><dd className="font-medium text-gray-800 dark:text-white/90">{formatRupiah(product.labor_cost)}</dd></div>
+              <div className="flex justify-between"><dt className="text-gray-500">Harga batu</dt><dd className="font-medium text-gray-800 dark:text-white/90">{formatRupiah(product.stone_price)}</dd></div>
+              <div className="flex justify-between"><dt className="text-gray-500">Margin</dt><dd className="font-medium text-gray-800 dark:text-white/90">{formatRupiah(product.margin_amount)}</dd></div>
               <div className="flex justify-between font-semibold text-gray-900 dark:text-white"><dt>Harga jual</dt><dd>{formatRupiah(quote.total)}</dd></div>
             </dl>
           ) : (

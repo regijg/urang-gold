@@ -1,3 +1,4 @@
+import FilterForm from "@/components/gold/FilterForm";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -58,7 +59,7 @@ export default async function CatalogPage({ params, searchParams }: Params) {
       </header>
 
       <div className="mx-auto max-w-6xl px-4 py-6">
-        <form autoComplete="off" method="get" className="mb-6 flex flex-col gap-3 sm:flex-row">
+        <FilterForm className="mb-6 flex flex-col gap-3 sm:flex-row">
           <input autoComplete="off" type="search" name="q" defaultValue={sp.q} placeholder="Cari perhiasan" className="h-11 flex-1 rounded-lg border border-gray-300 bg-white px-4 text-sm" />
           <select name="category" defaultValue={sp.category ?? ""} className="h-11 rounded-lg border border-gray-300 bg-white px-3 text-sm">
             <option value="">Semua kategori</option>
@@ -68,8 +69,7 @@ export default async function CatalogPage({ params, searchParams }: Params) {
               </option>
             ))}
           </select>
-          <button type="submit" className="h-11 rounded-lg bg-gray-900 px-5 text-sm font-medium text-white">Cari</button>
-        </form>
+        </FilterForm>
 
         {rows.length === 0 ? (
           <p className="py-16 text-center text-gray-500">Belum ada produk yang tersedia.</p>

@@ -39,9 +39,10 @@ export default function NavigationProgress() {
     if (tickRef.current) return;
     if (hideRef.current) clearTimeout(hideRef.current);
     setVisible(true);
-    setProgress(10);
+    setProgress(12);
+    // creeps towards 90% and slows down the closer it gets: a slow page never reaches the end
     tickRef.current = setInterval(() => {
-      setProgress((p) => (p < 85 ? p + (85 - p) * 0.1 : p));
+      setProgress((p) => p + (90 - p) * 0.04);
     }, 200);
     maxWaitRef.current = setTimeout(finish, MAX_WAIT_MS);
   };
@@ -85,10 +86,11 @@ export default function NavigationProgress() {
 
   if (!visible) return null;
 
+  // above the sticky header (z-99999); jumps to 100% only when the new page has arrived
   return (
-    <div className="fixed top-0 left-0 right-0 z-[99999] h-[3px] bg-transparent pointer-events-none">
+    <div role="progressbar" aria-label="Memuat halaman" className="pointer-events-none fixed inset-x-0 top-0 z-[100000] h-[3px]">
       <div
-        className="h-full bg-brand-500 shadow-[0_0_8px_rgba(0,0,0,0.3)] transition-[width] duration-200 ease-out"
+        className={`h-full bg-brand-500 shadow-[0_0_6px_var(--color-brand-500)] ease-out ${progress === 100 ? "transition-[width] duration-200" : "transition-[width] duration-500"}`}
         style={{ width: `${progress}%` }}
       />
     </div>

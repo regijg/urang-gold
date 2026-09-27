@@ -6,7 +6,7 @@ import RangeFilter from "@/components/gold/RangeFilter";
 import DailyChart from "@/components/gold/charts/DailyChart";
 import PrintButton from "@/components/gold/pos/PrintButton";
 import { resolveRange } from "@/lib/date-range";
-import { formatGram, formatRupiah } from "@/lib/format";
+import { formatDateOnly, formatGram, formatRupiah } from "@/lib/format";
 import { PAYMENT_LABELS } from "@/lib/payments";
 import { dbRupiah } from "@/lib/validation/common";
 import { MOVEMENT_LABELS } from "@/lib/validation/inventory";
@@ -38,7 +38,7 @@ function Line({ label, value, strong }: { label: string; value: string; strong?:
   return (
     <div className={`flex justify-between py-1.5 ${strong ? "border-t border-gray-200 font-semibold text-gray-900 dark:border-gray-700 dark:text-white" : ""}`}>
       <dt className={strong ? "" : "text-gray-500"}>{label}</dt>
-      <dd>{value}</dd>
+      <dd className={strong ? "" : "font-medium text-gray-800 dark:text-white/90"}>{value}</dd>
     </div>
   );
 }
@@ -54,7 +54,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
 
   return (
     <>
-      <PageHeader title="Laporan" description={`Periode ${range.fromDate} s/d ${range.toDate}`} />
+      <PageHeader title="Laporan" description={`Periode ${range.fromDate === range.toDate ? formatDateOnly(range.fromDate) : `${formatDateOnly(range.fromDate)} – ${formatDateOnly(range.toDate)}`}`} />
       <nav className="mb-4 flex flex-wrap gap-2 print:hidden">
         {TABS.map((t) => (
           <Link key={t.key} href={`/reports?tab=${t.key}&${qs}`} className={`rounded-lg px-3 py-1.5 text-sm ${tab === t.key ? "bg-brand-500 text-white" : "border border-gray-300 text-gray-700 dark:border-gray-700 dark:text-gray-300"}`}>
@@ -68,7 +68,6 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
           Export CSV
         </a>
         <PrintButton />
-        <span className="self-center text-xs text-gray-500">Gunakan &quot;Simpan sebagai PDF&quot; pada dialog cetak untuk PDF.</span>
       </div>
 
       {tab === "summary" && <SummaryTab range={range} store={sp.store} />}

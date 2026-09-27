@@ -66,3 +66,11 @@ export function groupThousands(value: string | number | null | undefined): strin
 export function formatGram(value: number | string | null | undefined): string {
   return `${gramFormatter.format(toNumber(value))} gram`;
 }
+
+/** "2026-09-27" (a calendar date, no time) -> "27 Sep 2026". */
+export function formatDateOnly(value: string | null | undefined): string {
+  if (!value) return "-";
+  const [y, m, d] = value.split("-").map(Number);
+  if (!y || !m || !d) return value;
+  return new Intl.DateTimeFormat("id-ID", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }).format(new Date(Date.UTC(y, m - 1, d)));
+}

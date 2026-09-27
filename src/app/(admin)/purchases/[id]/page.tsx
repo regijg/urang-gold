@@ -58,11 +58,11 @@ export default async function PurchaseDetailPage({ params }: { params: Promise<{
         <div className="space-y-4">
           <div className="rounded-2xl border border-gray-200 bg-white p-5 text-sm dark:border-gray-800 dark:bg-gray-900">
             <dl className="space-y-1">
-              <div className="flex justify-between"><dt className="text-gray-500">Modal</dt><dd>{formatRupiah(po.subtotal_cost)}</dd></div>
-              <div className="flex justify-between"><dt className="text-gray-500">Ongkos</dt><dd>{formatRupiah(po.labor_total)}</dd></div>
+              <div className="flex justify-between"><dt className="text-gray-500">Modal</dt><dd className="font-medium text-gray-800 dark:text-white/90">{formatRupiah(po.subtotal_cost)}</dd></div>
+              <div className="flex justify-between"><dt className="text-gray-500">Ongkos</dt><dd className="font-medium text-gray-800 dark:text-white/90">{formatRupiah(po.labor_total)}</dd></div>
               <div className="flex justify-between text-base font-semibold text-gray-900 dark:text-white"><dt>Total</dt><dd>{formatRupiah(po.total)}</dd></div>
-              <div className="flex justify-between"><dt className="text-gray-500">Dibayar</dt><dd>{formatRupiah(po.paid_total)}</dd></div>
-              <div className="flex justify-between font-medium"><dt>Sisa hutang</dt><dd>{formatRupiah(remaining)}</dd></div>
+              <div className="flex justify-between"><dt className="text-gray-500">Dibayar</dt><dd className="font-medium text-gray-800 dark:text-white/90">{formatRupiah(po.paid_total)}</dd></div>
+              <div className="flex justify-between font-medium text-gray-800 dark:text-white/90"><dt>Sisa hutang</dt><dd>{formatRupiah(remaining)}</dd></div>
             </dl>
           </div>
           {po.status === "RECEIVED" && remaining !== "0" && <PayPurchaseForm action={payPurchaseAction.bind(null, id)} remaining={remaining} />}

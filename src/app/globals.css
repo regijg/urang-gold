@@ -851,3 +851,22 @@ span.flatpickr-weekday,
     font-size: 14px;
   }
 }
+
+/* indeterminate top progress bar (page navigation) */
+@keyframes topProgress {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(350%);
+  }
+}
+
+/* filter results loading: dim everything after the filter form until the new data arrives */
+.filter-form ~ * {
+  transition: opacity 150ms ease;
+}
+.filter-form[aria-busy="true"] ~ * {
+  opacity: 0.45;
+  pointer-events: none;
+}

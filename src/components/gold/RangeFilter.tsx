@@ -1,5 +1,6 @@
 import React from "react";
 import type { DateRange } from "@/lib/date-range";
+import FilterForm from "./FilterForm";
 
 const PRESETS = [
   { value: "today", label: "Hari ini" },
@@ -11,7 +12,7 @@ const PRESETS = [
 
 const control = "h-10 rounded-lg border border-gray-300 bg-transparent px-3 text-sm dark:border-gray-700 dark:bg-gray-900 dark:text-white";
 
-/** GET form: range preset + optional custom dates + store. Works without JS. */
+/** Range preset + optional custom dates + store, applied without a page reload. */
 export default function RangeFilter({
   range,
   stores,
@@ -24,7 +25,7 @@ export default function RangeFilter({
   hidden?: Record<string, string | undefined>;
 }) {
   return (
-    <form autoComplete="off" method="get" className="mb-5 flex flex-wrap items-end gap-2 print:hidden">
+    <FilterForm className="mb-5 flex flex-wrap items-end gap-2 print:hidden">
       {Object.entries(hidden).map(([k, v]) => (v ? <input key={k} type="hidden" name={k} value={v} /> : null))}
       <select name="range" defaultValue={range.preset} className={control}>
         {PRESETS.map((p) => (
@@ -45,12 +46,6 @@ export default function RangeFilter({
           ))}
         </select>
       )}
-      <button type="submit" className="h-10 rounded-lg bg-brand-500 px-4 text-sm font-medium text-white">
-        Terapkan
-      </button>
-      <span className="text-xs text-gray-500">
-        {range.fromDate === range.toDate ? range.fromDate : `${range.fromDate} s/d ${range.toDate}`} (WIB)
-      </span>
-    </form>
+    </FilterForm>
   );
 }

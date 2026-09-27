@@ -61,8 +61,8 @@ export default async function BuybackDetailPage({ params }: { params: Promise<{ 
         <div className="space-y-4">
           <div className="rounded-2xl border border-gray-200 bg-white p-5 text-sm dark:border-gray-800 dark:bg-gray-900">
             <dl className="space-y-1">
-              <div className="flex justify-between"><dt className="text-gray-500">Bruto</dt><dd>{formatRupiah(bb.gross_total)}</dd></div>
-              <div className="flex justify-between"><dt className="text-gray-500">Potongan</dt><dd>-{formatRupiah(bb.deduction_total)}</dd></div>
+              <div className="flex justify-between"><dt className="text-gray-500">Bruto</dt><dd className="font-medium text-gray-800 dark:text-white/90">{formatRupiah(bb.gross_total)}</dd></div>
+              <div className="flex justify-between"><dt className="text-gray-500">Potongan</dt><dd className="font-medium text-gray-800 dark:text-white/90">-{formatRupiah(bb.deduction_total)}</dd></div>
               <div className="flex justify-between text-base font-semibold text-gray-900 dark:text-white"><dt>Dibayar</dt><dd>{formatRupiah(bb.total)}</dd></div>
             </dl>
             {bb.notes && <p className="mt-3 text-gray-500">Catatan: {bb.notes}</p>}

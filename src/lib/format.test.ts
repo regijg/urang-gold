@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatGram, formatRupiah, groupThousands, onlyDigits } from "./format";
+import { formatDateOnly, formatGram, formatRupiah, groupThousands, onlyDigits } from "./format";
 
 describe("formatRupiah", () => {
   it("formats with Indonesian thousand separators", () => {
@@ -41,5 +41,13 @@ describe("money input helpers", () => {
     expect(groupThousands("999")).toBe("999");
     expect(groupThousands("")).toBe("");
     expect(groupThousands(null)).toBe("");
+  });
+});
+
+describe("formatDateOnly", () => {
+  it("formats a calendar date without shifting the day", () => {
+    expect(formatDateOnly("2026-09-27")).toBe("27 Sep 2026");
+    expect(formatDateOnly("2026-01-01")).toBe("1 Jan 2026");
+    expect(formatDateOnly("")).toBe("-");
   });
 });
