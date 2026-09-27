@@ -3,11 +3,10 @@ import { ThemeToggleButton } from "@/components/common/ThemeToggleButton";
 import NotificationDropdown from "@/components/header/NotificationDropdown";
 import UserDropdown from "@/components/header/UserDropdown";
 import { useSidebar } from "@/context/SidebarContext";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useState ,useEffect,useRef} from "react";
-import logoUmroh from "../images/logo/umroh-logo.png";
+import UrangGoldLogo from "../images/logo/uranggold-logo.svg";
 
 const AppHeader: React.FC = () => {
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
@@ -90,21 +89,8 @@ const AppHeader: React.FC = () => {
             {/* Cross Icon */}
           </button>
 
-          <Link href="/" className="lg:hidden">
-            <Image
-              width={154}
-              height={32}
-              className="dark:hidden"
-              src={logoUmroh}
-              alt="Logo"
-            />
-            <Image
-              width={154}
-              height={32}
-              className="hidden dark:block"
-              src={logoUmroh}
-              alt="Logo"
-            />
+          <Link href="/dashboard" className="lg:hidden">
+            <UrangGoldLogo className="h-8 w-auto text-gray-900 dark:text-white" />
           </Link>
 
           <div className="flex items-center gap-2">

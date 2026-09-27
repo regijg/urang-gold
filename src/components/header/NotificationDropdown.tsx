@@ -1,56 +1,40 @@
 "use client";
 
-import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import React, { useCallback, useEffect, useState } from "react";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
+import { getNotificationsAction } from "@/app/(admin)/notifications-actions";
+import type { AppNotification } from "@/server/services/notification.service";
 
-type AlertItem = {
-  id: number;
-  title: string;
-  message: string;
-  href: string;
-  tone: "info" | "warning" | "success";
-  created_at: string;
-};
-
+/** Live reminders (gold price not updated, opname awaiting approval, unpaid purchases). */
 export default function NotificationDropdown() {
   const [isOpen, setIsOpen] = useState(false);
-  const [alerts, setAlerts] = useState<AlertItem[]>([]);
+  const [alerts, setAlerts] = useState<AppNotification[]>([]);
+  const pathname = usePathname();
 
-  useEffect(() => {
-    setAlerts([
-      {
-        id: 1,
-        title: "Tagihan menunggu pembayaran",
-        message: "2 unit masih memiliki tagihan bulan ini.",
-        href: "/billing",
-        tone: "warning",
-        created_at: new Date().toISOString(),
-      },
-      {
-        id: 2,
-        title: "Tamu baru tercatat",
-        message: "3 pengunjung menunggu verifikasi masuk.",
-        href: "/visitors",
-        tone: "info",
-        created_at: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
-      },
-    ]);
+  const load = useCallback(() => {
+    getNotificationsAction().then(setAlerts).catch(() => setAlerts([]));
   }, []);
 
-  const totalBadge = alerts.length;
+  // refresh on navigation (e.g. right after updating the gold price) and when opened
+  useEffect(() => load(), [load, pathname]);
+
+  const total = alerts.length;
 
   return (
     <div className="relative">
       <button
         className="relative dropdown-toggle flex items-center justify-center text-gray-500 transition-colors bg-white border border-gray-200 rounded-full hover:text-gray-700 h-11 w-11 hover:bg-gray-100 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
-        onClick={() => setIsOpen((v) => !v)}
+        onClick={() => {
+          if (!isOpen) load();
+          setIsOpen((v) => !v);
+        }}
+        aria-label={total ? `${total} notifikasi` : "Notifikasi"}
       >
-        {totalBadge > 0 && (
-          <span className="absolute -top-0.5 -right-0.5 z-10 min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold leading-none">
-            {totalBadge > 99 ? "99+" : totalBadge}
-            <span className="absolute inline-flex w-full h-full bg-red-400 rounded-full opacity-75 animate-ping" />
+        {total > 0 && (
+          <span className="absolute -top-0.5 -right-0.5 z-10 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold leading-none text-white">
+            {total > 99 ? "99+" : total}
           </span>
         )}
         <svg className="fill-current" width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -63,45 +47,43 @@ export default function NotificationDropdown() {
         onClose={() => setIsOpen(false)}
         className="absolute right-0 mt-[17px] flex h-auto max-h-[520px] w-[calc(100vw-16px)] max-w-[350px] flex-col rounded-2xl border border-gray-200 bg-white p-3 shadow-theme-lg dark:border-gray-800 dark:bg-gray-dark sm:w-[361px] sm:max-w-[361px]"
       >
-        <div className="flex items-center justify-between pb-3 mb-3 border-b border-gray-100 dark:border-gray-700">
+        <div className="mb-3 flex items-center justify-between border-b border-gray-100 pb-3 dark:border-gray-700">
           <h5 className="text-base font-semibold text-gray-800 dark:text-gray-200">Notifikasi</h5>
-          <button
-            onClick={() => setIsOpen(false)}
-            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition"
-          >
+          <button onClick={() => setIsOpen(false)} className="text-gray-400 transition hover:text-gray-600 dark:hover:text-gray-200" aria-label="Tutup">
             <svg className="fill-current" width="20" height="20" viewBox="0 0 24 24">
               <path fillRule="evenodd" clipRule="evenodd" d="M6.21967 7.28131C5.92678 6.98841 5.92678 6.51354 6.21967 6.22065C6.51256 5.92775 6.98744 5.92775 7.28033 6.22065L11.999 10.9393L16.7176 6.22078C17.0105 5.92789 17.4854 5.92788 17.7782 6.22078C18.0711 6.51367 18.0711 6.98855 17.7782 7.28144L13.0597 12L17.7782 16.7186C18.0711 17.0115 18.0711 17.4863 17.7782 17.7792C17.4854 18.0721 17.0105 18.0721 16.7176 17.7792L11.999 13.0607L7.28033 17.7794C6.98744 18.0722 6.51256 18.0722 6.21967 17.7794C5.92678 17.4865 5.92678 17.0116 6.21967 16.7187L10.9384 12L6.21967 7.28131Z" fill="currentColor" />
             </svg>
           </button>
         </div>
 
-        <ul className="flex flex-col overflow-y-auto custom-scrollbar">
-          {alerts.map((item) => (
-            <li key={item.id}>
-              <DropdownItem
-                onItemClick={() => setIsOpen(false)}
-                href={item.href}
-                className="flex items-start gap-3 rounded-lg border-b border-gray-100 dark:border-gray-800 px-3 py-3 hover:bg-gray-50 dark:hover:bg-white/5 transition"
-              >
-                <div className="mt-0.5 flex h-8 w-8 items-center justify-center rounded-full bg-brand-100 text-sm dark:bg-brand-900/30">
-                  {item.tone === "warning" ? "⚠️" : item.tone === "success" ? "✅" : "🏢"}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="text-sm font-semibold text-gray-800 dark:text-white">{item.title}</div>
-                  <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">{item.message}</div>
-                </div>
-              </DropdownItem>
-            </li>
-          ))}
-        </ul>
-
-        <Link
-          href="/billing"
-          onClick={() => setIsOpen(false)}
-          className="mt-3 block rounded-lg border border-gray-300 bg-white px-4 py-2 text-center text-sm font-medium text-gray-700 transition hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
-        >
-          Lihat Semua Aktifitas →
-        </Link>
+        {alerts.length === 0 ? (
+          <p className="px-3 py-8 text-center text-sm text-gray-500 dark:text-gray-400">Tidak ada notifikasi. Semua beres 👍</p>
+        ) : (
+          <ul className="custom-scrollbar flex flex-col overflow-y-auto">
+            {alerts.map((item) => (
+              <li key={item.id}>
+                <DropdownItem
+                  onItemClick={() => setIsOpen(false)}
+                  tag="a"
+                  href={item.href}
+                  className="flex items-start gap-3 rounded-lg border-b border-gray-100 px-3 py-3 transition hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-white/5"
+                >
+                  <div
+                    className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm ${
+                      item.tone === "warning" ? "bg-warning-50 dark:bg-warning-500/15" : "bg-brand-50 dark:bg-brand-500/15"
+                    }`}
+                  >
+                    {item.tone === "warning" ? "⚠️" : "ℹ️"}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-sm font-semibold text-gray-800 dark:text-white">{item.title}</div>
+                    <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">{item.message}</div>
+                  </div>
+                </DropdownItem>
+              </li>
+            ))}
+          </ul>
+        )}
       </Dropdown>
     </div>
   );

@@ -1,13 +1,12 @@
 "use client";
 import React, { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
 import { ChevronDownIcon, HorizontaLDots, ListIcon } from "../icons/index";
 
-import logoUmroh from "../images/logo/umroh-logo.png";
-import logoUmroh1 from "../images/logo/umroh-logo-1.png";
+import UrangGoldLogo from "../images/logo/uranggold-logo.svg";
+import UrangGoldMark from "../images/logo/uranggold-mark.svg";
 import {
   ArchiveBoxIcon,
   ArrowPathRoundedSquareIcon,
@@ -301,12 +300,9 @@ const AppSidebar: React.FC = () => {
       <div className="py-8 flex justify-center">
         {/* <Link href="/" className="flex items-center justify-center"> */}
           {isExpanded || isHovered || isMobileOpen ? (
-            <>
-              <Image className="dark:hidden" src={logoUmroh} alt="Logo" width={135} height={40} />
-              <Image className="hidden dark:block" src={logoUmroh} alt="Logo" width={135} height={40} />
-            </>
+            <UrangGoldLogo className="h-10 w-auto text-gray-900 dark:text-white" />
           ) : (
-            <Image src={logoUmroh1} alt="Logo" width={40} height={32} />
+            <UrangGoldMark className="h-10 w-10" />
           )}
         {/* </Link> */}
       </div>

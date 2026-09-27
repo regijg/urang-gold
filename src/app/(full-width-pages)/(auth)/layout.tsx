@@ -2,11 +2,10 @@ import GridShape from "@/components/common/GridShape";
 import ThemeTogglerTwo from "@/components/common/ThemeTogglerTwo";
 
 import { ThemeProvider } from "@/context/ThemeContext";
-import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-import logoUmroh from "../../../images/logo/umroh-logo.png";
+import UrangGoldLogo from "../../../images/logo/uranggold-logo.svg";
 
 export default function AuthLayout({
   children,
@@ -25,15 +24,10 @@ export default function AuthLayout({
               <div className="flex justify-center">
                 <div className="flex flex-col items-center max-w-xs text-center">
                   <Link href="/" className="mb-2 flex flex-col items-center">
-                    <Image
-                      width={250}
-                      height={48}
-                      src={logoUmroh}
-                      alt="Logo"
-                    />
+                    <UrangGoldLogo className="h-14 w-auto text-white" />
                   </Link>
                   <p className="text-gray-400 dark:text-white/60">
-                    GoldPOS — sistem kasir dan inventory untuk toko emas &amp; perhiasan.
+                    Sistem kasir dan inventory untuk toko emas &amp; perhiasan.
                   </p>
                 </div>
               </div>
