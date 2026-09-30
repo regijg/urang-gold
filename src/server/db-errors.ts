@@ -17,7 +17,7 @@ const RPC_ERRORS: Record<string, string> = {
   TOO_MANY_ITEMS: "Jumlah barang terlalu banyak untuk sekali proses.",
   INVALID_LOCATION: "Lokasi tidak valid untuk outlet tersebut.",
   INVALID_STORE: "Outlet tidak valid atau tidak aktif.",
-  INVALID_STATUS: "Status barang tidak memungkinkan tindakan ini.",
+  INVALID_STATUS: "Status saat ini tidak memungkinkan tindakan ini.",
   INVALID_TRANSITION: "Perubahan status tersebut tidak diizinkan.",
   INVALID_WEIGHT: "Berat tidak valid.",
   INVALID_AMOUNT: "Nominal tidak valid.",
@@ -52,6 +52,10 @@ const RPC_ERRORS: Record<string, string> = {
   INVALID_ROLE: "Role tidak dikenal.",
   INVALID_ACTION: "Aksi tidak valid.",
   INVALID_DATE: "Tanggal tidak valid.",
+  SESSION_ALREADY_OPEN: "Kas outlet ini masih terbuka. Tutup kas yang berjalan dulu.",
+  SESSION_CLOSED: "Kas sudah ditutup.",
+  INVALID_DIRECTION: "Jenis uang masuk/keluar tidak valid.",
+  TOO_MANY_PAYMENTS: "Terlalu banyak baris pembayaran.",
 };
 
 function rpcError(message: string | undefined): AppError | null {

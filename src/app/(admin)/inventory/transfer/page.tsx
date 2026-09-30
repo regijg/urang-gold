@@ -5,7 +5,7 @@ import { loadPage, requirePagePermission } from "@/server/page-guard";
 import { locationService, storeService } from "@/server/services/inventory.service";
 import { transferBulkAction } from "../actions";
 
-export const metadata: Metadata = { title: "Transfer Stok | GoldPOS" };
+export const metadata: Metadata = { title: "Transfer Stok | UrangGold" };
 
 export default async function TransferPage() {
   await requirePagePermission("stock_transfer.manage");

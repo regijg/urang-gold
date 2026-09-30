@@ -11,7 +11,7 @@ import { loadPage } from "@/server/page-guard";
 import { categoryService } from "@/server/services/master-data.service";
 import type { CategoryRow } from "@/server/repositories/master-data.repository";
 
-export const metadata: Metadata = { title: "Kategori | GoldPOS" };
+export const metadata: Metadata = { title: "Kategori | UrangGold" };
 
 export default async function CategoriesPage({ searchParams }: { searchParams: Promise<{ q?: string; page?: string }> }) {
   const { q, page } = await searchParams;

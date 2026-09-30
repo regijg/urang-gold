@@ -13,7 +13,7 @@ const outfit = Outfit({
 
 
 export const metadata: Metadata = {
-  title: "GoldPOS | Sistem Toko Emas",
+  title: "UrangGold | Sistem Toko Emas",
   description: "SaaS kasir, inventory, buyback, dan laporan untuk toko emas & perhiasan.",
 };
 

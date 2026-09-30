@@ -5,12 +5,14 @@ import { formatGram } from "@/lib/format";
 import { loadPage } from "@/server/page-guard";
 import { inventoryService } from "@/server/services/inventory.service";
 
-export const metadata: Metadata = { title: "Cetak Label | GoldPOS" };
+export const metadata: Metadata = { title: "Cetak Label | UrangGold" };
 
 // Prices are intentionally not printed: they follow the daily gold rate.
-export default async function LabelsPage({ searchParams }: { searchParams: Promise<{ ids?: string }> }) {
+export default async function LabelsPage({ searchParams }: { searchParams: Promise<{ ids?: string | string[] }> }) {
   const { ids } = await searchParams;
-  const items = await loadPage(() => inventoryService.getMany((ids ?? "").split(",").filter(Boolean)));
+  // ?ids=a,b (links) or ?ids=a&ids=b (checkbox form on the stock list)
+  const list = [ids ?? []].flat().flatMap((v) => v.split(",")).filter(Boolean);
+  const items = await loadPage(() => inventoryService.getMany([...new Set(list)]));
 
   return (
     <>

@@ -9,7 +9,7 @@ import { parsePage } from "@/lib/validation/common";
 import { loadPage, requirePagePermission } from "@/server/page-guard";
 import { purchaseService, type PurchaseRow } from "@/server/services/purchase.service";
 
-export const metadata: Metadata = { title: "Pembelian | GoldPOS" };
+export const metadata: Metadata = { title: "Pembelian | UrangGold" };
 
 const PAYMENT_STATUS: Record<string, string> = { UNPAID: "Belum dibayar", PARTIAL: "Sebagian", PAID: "Lunas" };
 

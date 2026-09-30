@@ -11,7 +11,7 @@ import { loadPage, requirePagePermission } from "@/server/page-guard";
 import { inventoryService } from "@/server/services/inventory.service";
 import type { MovementRow } from "@/server/repositories/inventory.repository";
 
-export const metadata: Metadata = { title: "Riwayat Mutasi | GoldPOS" };
+export const metadata: Metadata = { title: "Riwayat Mutasi | UrangGold" };
 
 const statusText = (s: string | null) => (s && isPieceStatus(s) ? STATUS_LABELS[s] : "-");
 

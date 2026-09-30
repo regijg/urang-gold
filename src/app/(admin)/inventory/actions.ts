@@ -4,7 +4,9 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { ok, toFailure, type ActionResult } from "@/lib/action-result";
 import { formToObject } from "@/lib/validation/master-data";
+import { toReceiveProduct, type ReceiveProduct } from "@/lib/product-pick";
 import { inventoryService, locationService } from "@/server/services/inventory.service";
+import { productService } from "@/server/services/product.service";
 
 function refresh(id?: string) {
   revalidatePath("/inventory");
@@ -38,6 +40,7 @@ export async function changeStatusAction(id: string, _prev: ActionResult | null,
   try {
     await inventoryService.changeStatus(id, formToObject(formData));
     refresh(id);
+    revalidatePath("/buybacks/stock");
     return ok(null, "Status berhasil diubah.");
   } catch (e) {
     return toFailure(e);
@@ -92,4 +95,25 @@ export async function deleteLocationAction(id: string): Promise<ActionResult> {
   }
   revalidatePath("/inventory/locations");
   redirect("/inventory/locations");
+}
+
+/** Product picker of the stock-in form (searched on the server, any catalogue size). */
+export async function searchReceiveProductsAction(q: string): Promise<ActionResult<ReceiveProduct[]>> {
+  try {
+    return ok((await productService.search(q, 8)).map(toReceiveProduct));
+  } catch (e) {
+    return toFailure(e);
+  }
+}
+
+/** Buyback piece back on display (price components + location) */
+export async function resellBuybackAction(id: string, _prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
+  try {
+    await inventoryService.resellBuyback(id, formToObject(formData));
+    refresh(id);
+    revalidatePath("/buybacks/stock");
+    return ok(null, "Barang dipajang untuk dijual.");
+  } catch (e) {
+    return toFailure(e);
+  }
 }

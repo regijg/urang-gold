@@ -9,7 +9,7 @@ import { loadPage } from "@/server/page-guard";
 import { goldRateService } from "@/server/services/gold-rate.service";
 import type { RateHistoryRow } from "@/server/repositories/gold-rate.repository";
 
-export const metadata: Metadata = { title: "Riwayat Harga Emas | GoldPOS" };
+export const metadata: Metadata = { title: "Riwayat Harga Emas | UrangGold" };
 
 export default async function GoldRateHistoryPage({ searchParams }: { searchParams: Promise<{ purity?: string; page?: string }> }) {
   const { purity, page } = await searchParams;

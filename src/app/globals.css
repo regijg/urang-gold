@@ -814,22 +814,6 @@ span.flatpickr-weekday,
   animation: fadeItem .25s ease-out;
 }
 
-/* Reports (Phase 8): "PDF / Print" export prints only the active report, not the
-   sidebar/header chrome around it. */
-@media print {
-  body * {
-    visibility: hidden;
-  }
-  .report-print-area,
-  .report-print-area * {
-    visibility: visible;
-  }
-  .report-print-area {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-  }
-}
 /* Printing receipts / labels from inside the admin shell */
 @media print {
   aside,
@@ -844,7 +828,7 @@ span.flatpickr-weekday,
   }
 }
 
-/* GoldPOS density: smaller base size on laptop/desktop so forms fit without much scrolling.
+/* UrangGold density: smaller base size on laptop/desktop so forms fit without much scrolling.
    Phones/tablets keep 16px (touch targets, and iOS zooms inputs with text < 16px). */
 @media (min-width: 1024px) {
   html {

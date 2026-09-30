@@ -43,3 +43,8 @@ export function resolveRange(params: { range?: string; from?: string; to?: strin
 
   return { preset, fromDate, toDate, fromIso: startIso(fromDate), toIso: startIso(addDays(toDate, 1)), label: LABELS[preset] };
 }
+
+/** Today's calendar date in Asia/Jakarta ("2026-09-30"). */
+export function todayWib(now = new Date()): string {
+  return wibDate(now);
+}

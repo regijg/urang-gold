@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "GoldPOS — Sistem Toko Emas",
-    short_name: "GoldPOS",
+    name: "UrangGold — Sistem Toko Emas",
+    short_name: "UrangGold",
     description: "Kasir, inventory, buyback, dan laporan untuk toko emas & perhiasan.",
     start_url: "/dashboard",
     scope: "/",

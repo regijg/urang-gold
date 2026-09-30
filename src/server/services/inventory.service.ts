@@ -2,6 +2,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { AppError } from "@/lib/action-result";
 import type { Permission } from "@/lib/auth/permissions";
 import { isUuid } from "@/lib/validation/common";
+import { validateResell } from "@/lib/validation/operations";
 import {
   isPieceStatus,
   storeSlug,
@@ -214,6 +215,25 @@ export const inventoryService = {
     if (!parsed.valid) invalid(parsed.errors);
     const supabase = await createSupabaseServerClient();
     await db(() => inventoryRepository.changeStatus(supabase, id, parsed.data));
+  },
+
+  /** Bought-back piece goes back on display with its selling components (one atomic RPC). */
+  async resellBuyback(id: string, raw: Record<string, unknown>) {
+    await requirePermission("inventory.manage");
+    if (!isUuid(id)) notFound();
+    const parsed = validateResell(raw);
+    if (!parsed.valid) invalid(parsed.errors);
+    const d = parsed.data;
+    const supabase = await createSupabaseServerClient();
+    const { error } = await supabase.rpc("gold_buyback_resell", {
+      p_inventory_id: id,
+      p_location_id: d.location_id,
+      p_labor_cost: d.labor_cost,
+      p_stone_price: d.stone_price,
+      p_margin_amount: d.margin_amount,
+      p_notes: d.notes,
+    });
+    if (error) throw mapDbError(error);
   },
 
   async updateDetails(id: string, raw: Record<string, unknown>) {

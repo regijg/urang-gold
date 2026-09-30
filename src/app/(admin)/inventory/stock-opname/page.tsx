@@ -10,7 +10,7 @@ import { locationService, storeService } from "@/server/services/inventory.servi
 import { stockOpnameService, type OpnameRow } from "@/server/services/stock-opname.service";
 import { startOpnameAction } from "./actions";
 
-export const metadata: Metadata = { title: "Stock Opname | GoldPOS" };
+export const metadata: Metadata = { title: "Stock Opname | UrangGold" };
 
 const OPNAME_STATUS: Record<string, string> = { OPEN: "Sedang dihitung", SUBMITTED: "Menunggu persetujuan", APPROVED: "Disetujui", CANCELLED: "Dibatalkan" };
 

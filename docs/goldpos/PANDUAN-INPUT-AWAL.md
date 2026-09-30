@@ -1,4 +1,4 @@
-# Panduan Input Awal GoldPOS
+# Panduan Input Awal UrangGold
 
 Urutan input dari nol sampai toko siap berjualan. Ikuti berurutan — setiap langkah
 membutuhkan data dari langkah sebelumnya.

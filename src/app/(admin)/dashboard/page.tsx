@@ -11,7 +11,7 @@ import { goldRateService } from "@/server/services/gold-rate.service";
 import { storeService } from "@/server/services/inventory.service";
 import { reportService } from "@/server/services/report.service";
 
-export const metadata: Metadata = { title: "Dashboard | GoldPOS" };
+export const metadata: Metadata = { title: "Dashboard | UrangGold" };
 
 function Metric({ label, value, hint }: { label: string; value: string; hint?: string }) {
   return (

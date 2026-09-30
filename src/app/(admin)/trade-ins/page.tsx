@@ -10,7 +10,7 @@ import { requireAppSession } from "@/server/auth/session";
 import { loadPage } from "@/server/page-guard";
 import { tradeInService, type TradeInRow } from "@/server/services/trade-in.service";
 
-export const metadata: Metadata = { title: "Tukar Tambah | GoldPOS" };
+export const metadata: Metadata = { title: "Tukar Tambah | UrangGold" };
 
 export default async function TradeInsPage({ searchParams }: { searchParams: Promise<{ q?: string; page?: string }> }) {
   const { q, page } = await searchParams;

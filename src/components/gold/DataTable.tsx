@@ -1,7 +1,9 @@
 import React from "react";
 
 export type Column<T> = {
-  header: string;
+  header: React.ReactNode;
+  /** needed when `header` is not a string */
+  key?: string;
   cell: (row: T) => React.ReactNode;
   className?: string;
 };
@@ -21,7 +23,7 @@ export default function DataTable<T>({ columns, rows, rowKey, empty = "Belum ada
           <thead className="border-b border-gray-100 bg-gray-50 dark:border-gray-800 dark:bg-white/[0.02]">
             <tr>
               {columns.map((c) => (
-                <th key={c.header} className={`px-4 py-3 text-left font-medium text-gray-500 dark:text-gray-400 ${c.className ?? ""}`}>
+                <th key={c.key ?? String(c.header)} className={`px-4 py-3 text-left font-medium text-gray-500 dark:text-gray-400 ${c.className ?? ""}`}>
                   {c.header}
                 </th>
               ))}
@@ -38,7 +40,7 @@ export default function DataTable<T>({ columns, rows, rowKey, empty = "Belum ada
               rows.map((row) => (
                 <tr key={rowKey(row)} className="hover:bg-gray-50 dark:hover:bg-white/[0.02]">
                   {columns.map((c) => (
-                    <td key={c.header} className={`px-4 py-3 text-gray-700 dark:text-gray-300 ${c.className ?? ""}`}>
+                    <td key={c.key ?? String(c.header)} className={`px-4 py-3 text-gray-700 dark:text-gray-300 ${c.className ?? ""}`}>
                       {c.cell(row)}
                     </td>
                   ))}

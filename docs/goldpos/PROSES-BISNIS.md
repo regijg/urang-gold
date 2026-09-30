@@ -1,7 +1,7 @@
-# GoldPOS — Proses Bisnis Aplikasi Toko Emas
+# UrangGold — Proses Bisnis Aplikasi Toko Emas
 
-GoldPOS adalah aplikasi kasir dan pengelolaan stok yang dibuat khusus untuk **toko emas dan perhiasan**.
-Dokumen ini menjelaskan bagaimana pekerjaan sehari-hari di toko emas berjalan di dalam GoldPOS —
+UrangGold adalah aplikasi kasir dan pengelolaan stok yang dibuat khusus untuk **toko emas dan perhiasan**.
+Dokumen ini menjelaskan bagaimana pekerjaan sehari-hari di toko emas berjalan di dalam UrangGold —
 dari harga emas pagi hari sampai laporan tutup toko.
 
 ---
@@ -10,7 +10,7 @@ dari harga emas pagi hari sampai laporan tutup toko.
 
 Toko emas tidak bisa memakai aplikasi kasir biasa, karena:
 
-| Kebutuhan toko emas | Cara GoldPOS menanganinya |
+| Kebutuhan toko emas | Cara UrangGold menanganinya |
 |---|---|
 | Harga berubah setiap hari mengikuti harga emas | Harga jual dihitung otomatis dari **harga emas hari ini × berat emas** barang |
 | Setiap perhiasan beratnya berbeda | Setiap barang dicatat **per keping** dengan berat aktual dan barcode sendiri |
@@ -25,7 +25,7 @@ Toko emas tidak bisa memakai aplikasi kasir biasa, karena:
 
 ## 2. Siapa Memakai Apa
 
-| Peran | Tugas utama di GoldPOS |
+| Peran | Tugas utama di UrangGold |
 |---|---|
 | **Owner** | Mengatur harga emas, melihat semua laporan dan keuntungan, mengatur staf dan hak akses, menyetujui stock opname |
 | **Admin** | Mengelola data produk, stok, transaksi, dan laporan |

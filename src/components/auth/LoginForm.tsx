@@ -20,7 +20,7 @@ export default function LoginForm({ next, error }: { next?: string; error?: stri
       <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
         <div className="mb-5 sm:mb-8">
           <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">Masuk</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Masukkan email dan password akun GoldPOS Anda.</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">Masukkan email dan password akun UrangGold Anda.</p>
         </div>
 
         {message && (

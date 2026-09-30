@@ -12,7 +12,7 @@ import { buybackService } from "@/server/services/buyback.service";
 import { storeService } from "@/server/services/inventory.service";
 import type { BuybackListRow } from "@/server/repositories/buyback.repository";
 
-export const metadata: Metadata = { title: "Buyback | GoldPOS" };
+export const metadata: Metadata = { title: "Buyback | UrangGold" };
 
 type Search = { q?: string; page?: string; store?: string; status?: string };
 

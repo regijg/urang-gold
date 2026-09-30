@@ -1,5 +1,5 @@
 /*
- * GoldPOS service worker.
+ * UrangGold service worker.
  *
  * Deliberately conservative:
  *  - Only hashed build assets (/_next/static), icons and images are cached.

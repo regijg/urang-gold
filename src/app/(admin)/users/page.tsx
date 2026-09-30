@@ -7,7 +7,7 @@ import { loadPage, requirePagePermission } from "@/server/page-guard";
 import { storeService } from "@/server/services/inventory.service";
 import { usersService, type StaffRow } from "@/server/services/users.service";
 
-export const metadata: Metadata = { title: "Pengguna | GoldPOS" };
+export const metadata: Metadata = { title: "Pengguna | UrangGold" };
 
 export default async function UsersPage() {
   await requirePagePermission("users.manage");

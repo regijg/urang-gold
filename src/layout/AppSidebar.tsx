@@ -11,6 +11,10 @@ import {
   ArchiveBoxIcon,
   ArrowPathRoundedSquareIcon,
   ArrowsRightLeftIcon,
+  BanknotesIcon,
+  ClipboardDocumentListIcon,
+  WalletIcon,
+  WrenchScrewdriverIcon,
   BuildingStorefrontIcon,
   ChartBarIcon,
   Cog6ToothIcon,
@@ -52,6 +56,12 @@ const navItems: NavItem[] = [
     permission: "pos.use",
   },
   {
+    icon: <WalletIcon className="w-5 h-5" />,
+    name: "Kas Harian",
+    path: "/cash",
+    permission: "cash.manage",
+  },
+  {
     icon: <ReceiptPercentIcon className="w-5 h-5" />,
     name: "Penjualan",
     path: "/sales",
@@ -60,14 +70,28 @@ const navItems: NavItem[] = [
   {
     icon: <ArrowsRightLeftIcon className="w-5 h-5" />,
     name: "Buyback",
-    path: "/buybacks",
-    permission: "buybacks.manage",
+    subItems: [
+      { name: "Transaksi Buyback", path: "/buybacks", permission: "buybacks.manage" },
+      { name: "Barang Hasil Buyback", path: "/buybacks/stock", permission: "inventory.manage" },
+    ],
   },
   {
     icon: <ArrowPathRoundedSquareIcon className="w-5 h-5" />,
     name: "Tukar Tambah",
     path: "/trade-ins",
     permission: "trade_ins.manage",
+  },
+  {
+    icon: <ClipboardDocumentListIcon className="w-5 h-5" />,
+    name: "Pesanan & DP",
+    path: "/orders",
+    permission: "orders.manage",
+  },
+  {
+    icon: <WrenchScrewdriverIcon className="w-5 h-5" />,
+    name: "Servis",
+    path: "/repairs",
+    permission: "repairs.manage",
   },
   {
     icon: <CubeIcon className="w-5 h-5" />,
@@ -100,6 +124,12 @@ const navItems: NavItem[] = [
     name: "Pembelian",
     path: "/purchases",
     permission: "purchases.manage",
+  },
+  {
+    icon: <BanknotesIcon className="w-5 h-5" />,
+    name: "Biaya Operasional",
+    path: "/expenses",
+    permission: "expenses.manage",
   },
   {
     icon: <ChartBarIcon className="w-5 h-5" />,

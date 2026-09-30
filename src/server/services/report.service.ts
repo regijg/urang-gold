@@ -50,6 +50,29 @@ export const reportService = {
     return out as unknown as ReportSummary;
   },
 
+  /** Operating expenses, repair income and forfeited order deposits (for net profit). */
+  async operations(range: DateRange, storeId?: string) {
+    await requirePermission("reports.view");
+    const [row] = await call<Record<string, unknown>>("gold_report_operations", { p_from: range.fromIso, p_to: range.toIso, p_store_id: store(storeId) });
+    return {
+      expense_total: dbRupiah(row?.expense_total as string),
+      expense_count: Number(row?.expense_count ?? 0),
+      repair_income: dbRupiah(row?.repair_income as string),
+      repair_count: Number(row?.repair_count ?? 0),
+      order_forfeit: dbRupiah(row?.order_forfeit as string),
+    };
+  },
+
+  async expensesByCategory(range: DateRange, storeId?: string) {
+    await requirePermission("reports.view");
+    const rows = await call<{ category: string; total: string; expense_count: number }>("gold_report_expenses", {
+      p_from: range.fromIso,
+      p_to: range.toIso,
+      p_store_id: store(storeId),
+    });
+    return rows.map((r) => ({ category: r.category, total: dbRupiah(r.total), count: Number(r.expense_count) }));
+  },
+
   async daily(range: DateRange, storeId?: string): Promise<DailyRow[]> {
     await requirePermission("reports.view");
     const rows = await call<DailyRow>("gold_report_daily", { p_from: range.fromIso, p_to: range.toIso, p_store_id: store(storeId) });

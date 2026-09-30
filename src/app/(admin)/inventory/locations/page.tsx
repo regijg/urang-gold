@@ -10,7 +10,7 @@ import { loadPage } from "@/server/page-guard";
 import { locationService, storeService } from "@/server/services/inventory.service";
 import type { LocationRow } from "@/server/repositories/location.repository";
 
-export const metadata: Metadata = { title: "Lokasi & Baki | GoldPOS" };
+export const metadata: Metadata = { title: "Lokasi & Baki | UrangGold" };
 
 export default async function LocationsPage({ searchParams }: { searchParams: Promise<{ store?: string }> }) {
   const { store } = await searchParams;

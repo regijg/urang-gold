@@ -63,6 +63,14 @@ describe("validateProduct", () => {
     }
   });
 
+  it("labor per gram: keeps the per-gram amount, labor_cost is derived in the database", () => {
+    const r = validateProduct({ ...base, laborMode: "PER_GRAM", laborPerGram: "50.000", laborCost: "999" });
+    expect(r.valid).toBe(true);
+    if (r.valid) expect(r.data).toMatchObject({ labor_per_gram: "50000", labor_cost: "0" });
+    const perPiece = validateProduct(base);
+    if (perPiece.valid) expect(perPiece.data.labor_per_gram).toBeNull();
+  });
+
   it("uppercases a manual SKU", () => {
     const r = validateProduct({ ...base, sku: "rng-00123" });
     if (r.valid) expect(r.data.sku).toBe("RNG-00123");

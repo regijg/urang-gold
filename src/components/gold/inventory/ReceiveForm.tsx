@@ -1,26 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import React, { useActionState, useMemo, useRef, useState } from "react";
+import React, { useActionState, useEffect, useRef, useState } from "react";
+import type { ReceiveProduct } from "@/lib/product-pick";
 import type { ActionResult } from "@/lib/action-result";
 import { formatGram, formatRupiah, groupThousands } from "@/lib/format";
 import { parseDecimal } from "@/lib/validation/common";
 import { FormAlert, FormCard, SubmitButton, fieldErrorsOf } from "../form";
 import RupiahInput from "@/components/gold/RupiahInput";
 
-export type ReceiveProduct = {
-  id: string;
-  sku: string;
-  name: string;
-  category: string;
-  purity: string;
-  gross_weight: string;
-  stone_weight: string;
-  cost_price: string;
-  labor_cost: string;
-  stone_price: string;
-  margin_amount: string;
-};
+export type { ReceiveProduct } from "@/lib/product-pick";
 
 type Option = { value: string; label: string };
 type Props = {
@@ -28,10 +17,11 @@ type Props = {
     prev: ActionResult<{ items: { inventory_id: string; barcode: string }[] }> | null,
     formData: FormData
   ) => Promise<ActionResult<{ items: { inventory_id: string; barcode: string }[] }>>;
-  products: ReceiveProduct[];
+  searchAction: (q: string) => Promise<ActionResult<ReceiveProduct[]>>;
+  initialProducts: ReceiveProduct[];
+  defaultProduct?: ReceiveProduct | null;
   stores: Option[];
   locations: { id: string; store_id: string; code: string; name: string }[];
-  defaultProductId?: string;
 };
 
 type Row = { key: number; gross: string; stone: string; serial: string; cost: string };
@@ -72,12 +62,15 @@ function sumGrams(values: string[]): string {
 
 const newRow = (key: number): Row => ({ key, gross: "", stone: "", serial: "", cost: "" });
 
-export default function ReceiveForm({ action, products, stores, locations, defaultProductId }: Props) {
+export default function ReceiveForm({ action, searchAction, initialProducts, defaultProduct, stores, locations }: Props) {
   const [state, formAction] = useActionState(action, null);
   const errors = fieldErrorsOf(state);
 
-  const [productId, setProductId] = useState(defaultProductId ?? "");
+  const [product, setProduct] = useState<ReceiveProduct | null>(defaultProduct ?? null);
   const [search, setSearch] = useState("");
+  const [matches, setMatches] = useState<ReceiveProduct[]>(initialProducts);
+  const [searching, setSearching] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
   const [storeId, setStoreId] = useState(stores[0]?.value ?? "");
   const [rows, setRows] = useState<Row[]>([newRow(0)]);
   const [nextKey, setNextKey] = useState(1);
@@ -86,12 +79,32 @@ export default function ReceiveForm({ action, products, stores, locations, defau
   const [missing, setMissing] = useState<Set<number>>(new Set());
   const weightRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  const product = products.find((p) => p.id === productId);
-  const matches = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    if (!q) return products.slice(0, 8);
-    return products.filter((p) => `${p.sku} ${p.name} ${p.purity} ${p.category}`.toLowerCase().includes(q)).slice(0, 8);
-  }, [products, search]);
+  const productId = product?.id ?? "";
+
+  // server-side search (debounced); the latest query wins
+  useEffect(() => {
+    const q = search.trim();
+    if (!q) {
+      setMatches(initialProducts);
+      setSearching(false);
+      return;
+    }
+    let live = true;
+    setSearching(true);
+    const t = setTimeout(async () => {
+      const r = await searchAction(q);
+      if (!live) return;
+      setSearching(false);
+      if (r.success) {
+        setMatches(r.data);
+        setSearchError(null);
+      } else setSearchError(r.message);
+    }, 300);
+    return () => {
+      live = false;
+      clearTimeout(t);
+    };
+  }, [search, searchAction, initialProducts]);
 
   const filled = rows.filter((r) => r.gross.trim() !== "");
   const totalWeight = sumGrams(filled.map((r) => r.gross));
@@ -168,7 +181,7 @@ export default function ReceiveForm({ action, products, stores, locations, defau
                   {product.sku} · {product.category} · Kadar {product.purity}
                 </p>
               </div>
-              <button type="button" onClick={() => setProductId("")} className="text-sm font-medium text-brand-600 hover:underline">
+              <button type="button" onClick={() => setProduct(null)} className="text-sm font-medium text-brand-600 hover:underline">
                 Ganti
               </button>
             </div>
@@ -191,8 +204,12 @@ export default function ReceiveForm({ action, products, stores, locations, defau
               autoFocus
             />
             {errors.productId && <p className="mt-1 text-sm text-error-500">{errors.productId}</p>}
-            <ul className="mt-2 divide-y divide-gray-100 rounded-xl border border-gray-200 dark:divide-gray-800 dark:border-gray-800">
-              {matches.length === 0 ? (
+            <ul className={`mt-2 divide-y divide-gray-100 rounded-xl border border-gray-200 transition-opacity dark:divide-gray-800 dark:border-gray-800 ${searching ? "opacity-60" : ""}`}>
+              {searchError ? (
+                <li className="p-4 text-sm text-error-500">{searchError}</li>
+              ) : searching && matches.length === 0 ? (
+                <li className="p-4 text-sm text-gray-500">Mencari…</li>
+              ) : matches.length === 0 ? (
                 <li className="p-4 text-sm text-gray-500">
                   Produk tidak ditemukan.{" "}
                   <Link href="/products/new" className="font-medium text-brand-500 hover:underline">
@@ -202,7 +219,7 @@ export default function ReceiveForm({ action, products, stores, locations, defau
               ) : (
                 matches.map((p) => (
                   <li key={p.id}>
-                    <button type="button" onClick={() => setProductId(p.id)} className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-white/5">
+                    <button type="button" onClick={() => setProduct(p)} className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-white/5">
                       <span>
                         <span className="block font-medium text-gray-900 dark:text-white">{p.name}</span>
                         <span className="text-xs text-gray-500">

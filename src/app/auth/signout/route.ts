@@ -3,7 +3,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 /**
  * Clears the Supabase session cookie, then goes to /login.
- * Used when a user is authenticated with Supabase but has no usable GoldPOS
+ * Used when a user is authenticated with Supabase but has no usable UrangGold
  * session (no profile, deactivated, tenant suspended). Server Components cannot
  * write cookies, so they redirect here instead of straight to /login — which
  * the middleware would bounce back to /dashboard.

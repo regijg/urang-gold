@@ -5,6 +5,7 @@ import ListToolbar from "@/components/gold/ListToolbar";
 import PageHeader from "@/components/gold/PageHeader";
 import Pagination from "@/components/gold/Pagination";
 import PieceStatusBadge from "@/components/gold/PieceStatusBadge";
+import { LabelPrintBar, LabelRowCheckbox, LabelSelectAll } from "@/components/gold/inventory/LabelSelection";
 import { formatGram, formatRupiah } from "@/lib/format";
 import { parsePage } from "@/lib/validation/common";
 import { PIECE_STATUSES, STATUS_LABELS } from "@/lib/validation/inventory";
@@ -14,7 +15,7 @@ import { inventoryService, storeService } from "@/server/services/inventory.serv
 import { categoryService, purityService } from "@/server/services/master-data.service";
 import type { InventoryRow } from "@/server/repositories/inventory.repository";
 
-export const metadata: Metadata = { title: "Inventory | GoldPOS" };
+export const metadata: Metadata = { title: "Inventory | UrangGold" };
 
 type Search = { q?: string; page?: string; store?: string; location?: string; status?: string; category?: string; purity?: string };
 
@@ -83,6 +84,7 @@ export default async function InventoryPage({ searchParams }: { searchParams: Pr
         rowKey={(r) => r.id}
         empty="Tidak ada barang untuk filter ini."
         columns={[
+          { key: "select", header: <LabelSelectAll />, cell: (r) => <LabelRowCheckbox id={r.id} label={r.barcode} />, className: "w-8 print:hidden" },
           {
             header: "Barang",
             cell: (r) => (
@@ -110,6 +112,7 @@ export default async function InventoryPage({ searchParams }: { searchParams: Pr
           { header: "Status", cell: (r) => <PieceStatusBadge status={r.status} /> },
         ]}
       />
+      <LabelPrintBar />
       <Pagination
         page={data.page}
         pageSize={data.pageSize}

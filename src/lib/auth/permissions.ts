@@ -27,6 +27,10 @@ export const PERMISSIONS = [
   "customers.manage",
   "reports.view",
   "settings.manage",
+  "cash.manage",
+  "expenses.manage",
+  "orders.manage",
+  "repairs.manage",
 ] as const;
 export type Permission = (typeof PERMISSIONS)[number];
 
@@ -95,6 +99,15 @@ export const PERMISSION_GROUPS: { label: string; items: { key: Permission; label
       { key: "trade_ins.manage", label: "Tukar tambah" },
       { key: "sales.void", label: "Batalkan (void) transaksi" },
       { key: "purchases.manage", label: "Pembelian dari supplier" },
+      { key: "orders.manage", label: "Pesanan & DP" },
+      { key: "repairs.manage", label: "Servis perhiasan" },
+    ],
+  },
+  {
+    label: "Kas & Biaya",
+    items: [
+      { key: "cash.manage", label: "Buka/tutup kas harian, uang masuk/keluar laci" },
+      { key: "expenses.manage", label: "Catat biaya operasional" },
     ],
   },
   {

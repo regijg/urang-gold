@@ -10,12 +10,13 @@ import { formatDateOnly, formatGram, formatRupiah } from "@/lib/format";
 import { PAYMENT_LABELS } from "@/lib/payments";
 import { dbRupiah } from "@/lib/validation/common";
 import { MOVEMENT_LABELS } from "@/lib/validation/inventory";
+import { EXPENSE_LABELS } from "@/lib/validation/operations";
 import { subRupiah } from "@/lib/validation/sales";
 import { loadPage, requirePagePermission } from "@/server/page-guard";
 import { storeService } from "@/server/services/inventory.service";
 import { reportService, type CustomerReportRow, type DailyRow, type InventoryReportRow, type PaymentReportRow } from "@/server/services/report.service";
 
-export const metadata: Metadata = { title: "Laporan | GoldPOS" };
+export const metadata: Metadata = { title: "Laporan | UrangGold" };
 
 const TABS = [
   { key: "summary", label: "Laba/Rugi & Ringkasan" },
@@ -80,7 +81,11 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
 }
 
 async function SummaryTab({ range, store }: { range: ReturnType<typeof resolveRange>; store?: string }) {
-  const [s, daily] = await loadPage(() => Promise.all([reportService.summary(range, store), reportService.daily(range, store)]));
+  const [s, daily, ops, expenses] = await loadPage(() =>
+    Promise.all([reportService.summary(range, store), reportService.daily(range, store), reportService.operations(range, store), reportService.expensesByCategory(range, store)])
+  );
+  // DB values may be negative (a loss): BigInt directly, not the input parsers
+  const net = (BigInt(s.gross_profit) + BigInt(ops.repair_income) + BigInt(ops.order_forfeit) - BigInt(ops.expense_total)).toString();
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       <div className="rounded-2xl border border-gray-200 bg-white p-5 text-sm dark:border-gray-800 dark:bg-gray-900">
@@ -90,8 +95,21 @@ async function SummaryTab({ range, store }: { range: ReturnType<typeof resolveRa
           <Line label="Diskon diberikan" value={formatRupiah(s.sales_discount)} />
           <Line label="Harga pokok penjualan (HPP)" value={`-${formatRupiah(s.sales_cost)}`} />
           <Line label="Laba kotor" value={formatRupiah(s.gross_profit)} strong />
+          {ops.repair_income !== "0" && <Line label={`Pendapatan servis (${ops.repair_count})`} value={formatRupiah(ops.repair_income)} />}
+          {ops.order_forfeit !== "0" && <Line label="DP pesanan hangus" value={formatRupiah(ops.order_forfeit)} />}
+          <Line label={`Biaya operasional (${ops.expense_count})`} value={`-${formatRupiah(ops.expense_total)}`} />
+          <Line label="Laba bersih" value={net.startsWith("-") ? `-${formatRupiah(net.slice(1))}` : formatRupiah(net)} strong />
         </dl>
-        <p className="mt-2 text-xs text-gray-400">Biaya operasional belum termasuk (modul biaya belum tersedia).</p>
+        {expenses.length > 0 && (
+          <div className="mt-3 border-t border-gray-100 pt-3 dark:border-gray-800">
+            <p className="mb-1 text-xs font-medium uppercase text-gray-400">Rincian biaya</p>
+            <dl>
+              {expenses.map((e) => (
+                <Line key={e.category} label={EXPENSE_LABELS[e.category as keyof typeof EXPENSE_LABELS] ?? e.category} value={formatRupiah(e.total)} />
+              ))}
+            </dl>
+          </div>
+        )}
       </div>
       <div className="rounded-2xl border border-gray-200 bg-white p-5 text-sm dark:border-gray-800 dark:bg-gray-900">
         <h2 className="mb-2 font-semibold text-gray-900 dark:text-white">Aktivitas & Stok</h2>

@@ -1,4 +1,4 @@
-# GoldPOS — Deployment (Vercel + Supabase)
+# UrangGold — Deployment (Vercel + Supabase)
 
 ## 1. Supabase
 
@@ -23,7 +23,7 @@
 
 - Framework: Next.js, build `npm run build`, Node 20.
 - Setelah deploy: buka `/register` (jika dibuka) untuk membuat owner pertama, lalu tutup
-  pendaftaran dengan `REGISTRATION_ENABLED=false` bila GoldPOS tidak dijual self-service.
+  pendaftaran dengan `REGISTRATION_ENABLED=false` bila UrangGold tidak dijual self-service.
 
 ## 4. Checklist setelah deploy
 

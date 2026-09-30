@@ -14,7 +14,7 @@ import { goldRateService } from "@/server/services/gold-rate.service";
 import { productService } from "@/server/services/product.service";
 import type { ProductRow } from "@/server/repositories/product.repository";
 
-export const metadata: Metadata = { title: "Produk | GoldPOS" };
+export const metadata: Metadata = { title: "Produk | UrangGold" };
 
 type Search = { q?: string; page?: string; category?: string; status?: string };
 

@@ -15,7 +15,7 @@ export type ProductRow = Omit<ProductInput, "sku"> & {
 
 const SELECT =
   "id, category_id, purity_id, sku, name, description, gross_weight, stone_weight, gold_weight, stone_type, " +
-  "cost_price, labor_cost, stone_price, margin_amount, photo_path, is_active, created_at, " +
+  "cost_price, labor_cost, labor_per_gram, stone_price, margin_amount, photo_path, is_active, created_at, " +
   "category:gold_categories(id, code, name), purity:gold_purities(id, code, percentage)";
 
 type Raw = Omit<ProductRow, "category" | "purity"> & {
@@ -31,6 +31,35 @@ function normalize(row: Raw): ProductRow {
 export type ProductListParams = { q?: string; page?: number; pageSize?: number; categoryId?: string; status?: "active" | "inactive" };
 
 export const productRepository = {
+  /**
+   * Active products for pickers. Every word must match the name, SKU, purity code or
+   * category (so "cincin 18k" works); purities/categories are small, resolved in code.
+   */
+  async search(supabase: SupabaseClient, q: string, limit = 8): Promise<ProductRow[]> {
+    const words = sanitizeSearch(q).split(" ").filter(Boolean).slice(0, 5);
+    let query = supabase.from("gold_products").select(SELECT).eq("is_active", true);
+    if (words.length) {
+      const [pur, cat] = await Promise.all([
+        supabase.from("gold_purities").select("id, code"),
+        supabase.from("gold_categories").select("id, code, name"),
+      ]);
+      if (pur.error) throw pur.error;
+      if (cat.error) throw cat.error;
+      for (const w of words) {
+        const lw = w.toLowerCase();
+        const parts = [`name.ilike.%${w}%`, `sku.ilike.%${w}%`];
+        const pIds = (pur.data ?? []).filter((r) => String(r.code).toLowerCase().includes(lw)).map((r) => r.id);
+        const cIds = (cat.data ?? []).filter((r) => `${r.code} ${r.name}`.toLowerCase().includes(lw)).map((r) => r.id);
+        if (pIds.length) parts.push(`purity_id.in.(${pIds.join(",")})`);
+        if (cIds.length) parts.push(`category_id.in.(${cIds.join(",")})`);
+        query = query.or(parts.join(","));
+      }
+    }
+    const { data, error } = await query.order("name").limit(Math.min(limit, 50));
+    if (error) throw error;
+    return ((data ?? []) as unknown as Raw[]).map(normalize);
+  },
+
   async list(supabase: SupabaseClient, params: ProductListParams = {}): Promise<ListResult<ProductRow>> {
     const page = params.page && params.page > 0 ? params.page : 1;
     let query = supabase.from("gold_products").select(SELECT, { count: "exact" });

@@ -58,6 +58,16 @@ export const productService = {
     }
   },
 
+  async search(q: unknown, limit = 8) {
+    if (!(await getAppSession())) throw new AppError("UNAUTHENTICATED", "Sesi berakhir. Silakan login kembali.");
+    const supabase = await createSupabaseServerClient();
+    try {
+      return await productRepository.search(supabase, typeof q === "string" ? q : "", limit);
+    } catch (e) {
+      throw mapDbError(e);
+    }
+  },
+
   async get(id: string) {
     if (!(await getAppSession())) throw new AppError("UNAUTHENTICATED", "Sesi berakhir. Silakan login kembali.");
     if (!isUuid(id)) notFound();

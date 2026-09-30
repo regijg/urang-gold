@@ -11,7 +11,7 @@ import { loadPage } from "@/server/page-guard";
 import { supplierService } from "@/server/services/master-data.service";
 import type { SupplierRow } from "@/server/repositories/master-data.repository";
 
-export const metadata: Metadata = { title: "Supplier | GoldPOS" };
+export const metadata: Metadata = { title: "Supplier | UrangGold" };
 
 export default async function SuppliersPage({ searchParams }: { searchParams: Promise<{ q?: string; page?: string }> }) {
   const { q, page } = await searchParams;

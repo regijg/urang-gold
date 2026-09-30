@@ -8,7 +8,7 @@ import { loadPage, requirePagePermission } from "@/server/page-guard";
 import { settingsService } from "@/server/services/settings.service";
 import { renameTenantAction } from "./actions";
 
-export const metadata: Metadata = { title: "Pengaturan | GoldPOS" };
+export const metadata: Metadata = { title: "Pengaturan | UrangGold" };
 
 const card = "rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900";
 

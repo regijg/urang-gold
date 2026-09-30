@@ -92,6 +92,8 @@ export type ProductInput = {
   stone_type: string | null;
   cost_price: string;
   labor_cost: string;
+  /** set = labor is per gram of gold; the database derives labor_cost from it */
+  labor_per_gram: string | null;
   stone_price: string;
   margin_amount: string;
   is_active: boolean;
@@ -142,7 +144,9 @@ export function validateProduct(raw: Raw): ValidationResult<ProductInput> {
     stone_weight: stone ?? "0",
     stone_type,
     cost_price: money(raw.costPrice, "Harga modal", errors, "costPrice"),
-    labor_cost: money(raw.laborCost, "Ongkos", errors, "laborCost"),
+    // per gram: labor_cost is recomputed by a trigger (per-gram × gold weight)
+    labor_cost: str(raw.laborMode) === "PER_GRAM" ? "0" : money(raw.laborCost, "Ongkos", errors, "laborCost"),
+    labor_per_gram: str(raw.laborMode) === "PER_GRAM" ? money(raw.laborPerGram, "Ongkos per gram", errors, "laborPerGram") : null,
     stone_price: money(raw.stonePrice, "Harga batu", errors, "stonePrice"),
     margin_amount: money(raw.marginAmount, "Margin", errors, "marginAmount"),
     is_active: bool(raw.isActive),

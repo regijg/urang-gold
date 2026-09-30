@@ -7,7 +7,7 @@ export default function OfflinePage() {
         <p className="text-4xl">📶</p>
         <h1 className="mt-4 text-xl font-semibold text-gray-900">Tidak ada koneksi internet</h1>
         <p className="mt-2 text-sm text-gray-500">
-          GoldPOS membutuhkan koneksi untuk menyimpan transaksi dengan aman. Periksa jaringan lalu coba lagi.
+          UrangGold membutuhkan koneksi untuk menyimpan transaksi dengan aman. Periksa jaringan lalu coba lagi.
         </p>
       </div>
     </main>

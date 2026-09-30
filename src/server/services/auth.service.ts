@@ -26,7 +26,7 @@ export async function login(input: LoginInput): Promise<void> {
   }
   if (!profile.tenant || profile.tenant.status !== "ACTIVE") {
     await supabase.auth.signOut();
-    throw new AppError("TENANT_INACTIVE", "Toko Anda sedang tidak aktif. Hubungi admin GoldPOS.");
+    throw new AppError("TENANT_INACTIVE", "Toko Anda sedang tidak aktif. Hubungi admin UrangGold.");
   }
 
   // audit trail (§27); a failure here must not block the login
@@ -45,7 +45,7 @@ export function isRegistrationEnabled(): boolean {
  */
 export async function registerOwner(input: RegisterInput): Promise<void> {
   if (!isRegistrationEnabled()) {
-    throw new AppError("REGISTRATION_DISABLED", "Pendaftaran toko baru sedang ditutup. Hubungi admin GoldPOS.");
+    throw new AppError("REGISTRATION_DISABLED", "Pendaftaran toko baru sedang ditutup. Hubungi admin UrangGold.");
   }
   const admin = createSupabaseAdminClient();
 

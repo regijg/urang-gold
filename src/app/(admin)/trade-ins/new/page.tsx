@@ -6,7 +6,7 @@ import { goldRateService } from "@/server/services/gold-rate.service";
 import { storeService } from "@/server/services/inventory.service";
 import { categoryService } from "@/server/services/master-data.service";
 
-export const metadata: Metadata = { title: "Tukar Tambah | GoldPOS" };
+export const metadata: Metadata = { title: "Tukar Tambah | UrangGold" };
 
 export default async function NewTradeInPage() {
   const session = await requirePagePermission("trade_ins.manage");

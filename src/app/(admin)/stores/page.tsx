@@ -7,7 +7,7 @@ import { loadPage, requirePagePermission } from "@/server/page-guard";
 import { storeService } from "@/server/services/inventory.service";
 import type { StoreRow } from "@/server/repositories/store.repository";
 
-export const metadata: Metadata = { title: "Outlet | GoldPOS" };
+export const metadata: Metadata = { title: "Outlet | UrangGold" };
 
 export default async function StoresPage() {
   await requirePagePermission("stores.manage");

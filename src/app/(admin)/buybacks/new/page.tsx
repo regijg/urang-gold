@@ -6,7 +6,7 @@ import { goldRateService } from "@/server/services/gold-rate.service";
 import { storeService } from "@/server/services/inventory.service";
 import { categoryService } from "@/server/services/master-data.service";
 
-export const metadata: Metadata = { title: "Buyback Baru | GoldPOS" };
+export const metadata: Metadata = { title: "Buyback Baru | UrangGold" };
 
 export default async function NewBuybackPage() {
   const session = await requirePagePermission("buybacks.manage");

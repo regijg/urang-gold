@@ -10,7 +10,7 @@ import { loadPage } from "@/server/page-guard";
 import { customerService } from "@/server/services/master-data.service";
 import type { CustomerRow } from "@/server/repositories/master-data.repository";
 
-export const metadata: Metadata = { title: "Customer | GoldPOS" };
+export const metadata: Metadata = { title: "Customer | UrangGold" };
 
 // Reading customers already requires customers.manage (enforced in the service + RLS),
 // so anyone who can see this page may also add/edit.

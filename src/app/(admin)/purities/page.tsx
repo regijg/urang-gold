@@ -12,7 +12,7 @@ import { loadPage } from "@/server/page-guard";
 import { purityService } from "@/server/services/master-data.service";
 import type { PurityRow } from "@/server/repositories/master-data.repository";
 
-export const metadata: Metadata = { title: "Kadar Emas | GoldPOS" };
+export const metadata: Metadata = { title: "Kadar Emas | UrangGold" };
 
 export default async function PuritiesPage({ searchParams }: { searchParams: Promise<{ q?: string; page?: string }> }) {
   const { q, page } = await searchParams;

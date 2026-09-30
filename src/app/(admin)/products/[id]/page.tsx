@@ -2,6 +2,7 @@ import DeleteButton from "@/components/gold/DeleteButton";
 import PageHeader from "@/components/gold/PageHeader";
 import ProductForm from "@/components/gold/master/ProductForm";
 import { formatGram, formatRupiah } from "@/lib/format";
+import { requireAppSession } from "@/server/auth/session";
 import { loadPage, requirePagePermission } from "@/server/page-guard";
 import { loadProductFormOptions } from "@/server/services/product-options";
 import { goldRateService } from "@/server/services/gold-rate.service";
@@ -11,6 +12,7 @@ import { deleteProductAction, saveProductAction } from "../actions";
 export default async function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   await requirePagePermission("master_data.manage");
+  const session = await requireAppSession();
   const product = await loadPage(() => productService.get(id));
   const { categories, purities } = await loadPage(() => loadProductFormOptions(product));
   const quote = await loadPage(() => goldRateService.quoteProduct(id));
@@ -21,6 +23,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
         title={product.name}
         description={`${product.sku} · Berat emas ${formatGram(product.gold_weight)}`}
         back={{ href: "/products", label: "Produk" }}
+        action={product.is_active && session.permissions.includes("inventory.manage") ? { href: `/inventory/new?product=${product.id}`, label: "+ Tambah Stok" } : null}
       />
       <div className="space-y-6">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 text-sm dark:border-gray-800 dark:bg-gray-900">

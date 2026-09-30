@@ -66,6 +66,8 @@ describe("migration seed matches app constants", () => {
     const appended = [...sql.matchAll(/array_append\(permissions, '([a-z_.]+)'\)\s*where code in \(([^)]*)\)/g)]
       .filter((m) => m[2].includes("'OWNER'"))
       .map((m) => m[1]);
+    // later migrations may also add defaults as a values list: ('OWNER', array['a', 'b'])
+    for (const m of sql.matchAll(/\('OWNER',\s*array\[([^\]]*)\]\)/g)) appended.push(...(m[1].match(/[a-z_]+\.[a-z_]+/g) ?? []));
     for (const p of PERMISSIONS) expect(ownerBlock.includes(`'${p}'`) || appended.includes(p)).toBe(true);
   });
 

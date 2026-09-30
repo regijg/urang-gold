@@ -10,7 +10,7 @@ import { goldRateService } from "@/server/services/gold-rate.service";
 import type { CurrentRateRow } from "@/server/repositories/gold-rate.repository";
 import { updateGoldRatesAction } from "./actions";
 
-export const metadata: Metadata = { title: "Harga Emas | GoldPOS" };
+export const metadata: Metadata = { title: "Harga Emas | UrangGold" };
 
 export default async function GoldRatesPage() {
   const session = await requireAppSession();

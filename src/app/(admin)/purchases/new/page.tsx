@@ -7,7 +7,7 @@ import { locationService, storeService } from "@/server/services/inventory.servi
 import { supplierService } from "@/server/services/master-data.service";
 import { productService } from "@/server/services/product.service";
 
-export const metadata: Metadata = { title: "Pembelian Baru | GoldPOS" };
+export const metadata: Metadata = { title: "Pembelian Baru | UrangGold" };
 
 export default async function NewPurchasePage() {
   await requirePagePermission("purchases.manage");

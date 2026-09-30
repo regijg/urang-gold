@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import LoginForm from "@/components/auth/LoginForm";
 
 export const metadata: Metadata = {
-  title: "Masuk | GoldPOS",
+  title: "Masuk | UrangGold",
 };
 
 export default async function LoginPage({

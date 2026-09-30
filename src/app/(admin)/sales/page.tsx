@@ -12,7 +12,7 @@ import { storeService } from "@/server/services/inventory.service";
 import { salesService } from "@/server/services/sales.service";
 import type { SaleListRow } from "@/server/repositories/sales.repository";
 
-export const metadata: Metadata = { title: "Penjualan | GoldPOS" };
+export const metadata: Metadata = { title: "Penjualan | UrangGold" };
 
 type Search = { q?: string; page?: string; store?: string; status?: string };
 

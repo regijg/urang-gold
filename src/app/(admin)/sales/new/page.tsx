@@ -3,7 +3,7 @@ import PosScreen from "@/components/gold/pos/PosScreen";
 import { loadPage, requirePagePermission } from "@/server/page-guard";
 import { storeService } from "@/server/services/inventory.service";
 
-export const metadata: Metadata = { title: "Kasir | GoldPOS" };
+export const metadata: Metadata = { title: "Kasir | UrangGold" };
 
 export default async function PosPage() {
   const session = await requirePagePermission("pos.use");
