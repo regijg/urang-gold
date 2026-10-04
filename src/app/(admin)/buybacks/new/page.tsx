@@ -3,6 +3,7 @@ import PageHeader from "@/components/gold/PageHeader";
 import BuybackForm from "@/components/gold/pos/BuybackForm";
 import { loadPage, requirePagePermission } from "@/server/page-guard";
 import { goldRateService } from "@/server/services/gold-rate.service";
+import { cashService } from "@/server/services/cash.service";
 import { storeService } from "@/server/services/inventory.service";
 import { categoryService } from "@/server/services/master-data.service";
 
@@ -13,6 +14,7 @@ export default async function NewBuybackPage() {
   const [stores, categories, rates] = await loadPage(() =>
     Promise.all([storeService.list({ activeOnly: true }), categoryService.list({ activeOnly: true, pageSize: 500 }), goldRateService.current()])
   );
+  const cashSessions = await loadPage(() => cashService.openForStores(stores.map((s) => s.id)));
   return (
     <>
       <PageHeader title="Buyback" description="Customer menjual emas/perhiasan ke toko." back={{ href: "/buybacks", label: "Buyback" }} />
@@ -21,6 +23,8 @@ export default async function NewBuybackPage() {
         categories={categories.rows.map((c) => ({ id: c.id, name: c.name }))}
         purities={rates.map((r) => ({ purity_id: r.purity_id, code: r.code, buy_price: r.buy_price }))}
         canOverridePrice={session.permissions.includes("gold_rates.manage")}
+        cashSessions={cashSessions}
+        canManageCash={session.permissions.includes("cash.manage")}
       />
     </>
   );

@@ -9,13 +9,25 @@ import { checkoutAction, repriceAction } from "@/app/(admin)/sales/actions";
 import CartPanel, { type CartLine } from "./CartPanel";
 import CustomerPicker, { type PickedCustomer } from "./CustomerPicker";
 import PaymentEditor, { type PaymentRow } from "./PaymentEditor";
+import CashGate from "../cash/CashGate";
+import type { OpenCashInfo } from "@/server/services/cash.service";
 
 type Done = { invoice_number: string; total: string; change_amount: string; sale_id: string; public_token: string };
 
 // text colour set on the card so every amount inside is readable in light and dark mode
 const card = "rounded-2xl border border-gray-200 bg-white p-4 text-gray-800 dark:border-gray-800 dark:bg-gray-900 dark:text-white/90";
 
-export default function PosScreen({ stores, canCustomers }: { stores: { id: string; name: string }[]; canCustomers: boolean }) {
+export default function PosScreen({
+  stores,
+  canCustomers,
+  cashSessions,
+  canManageCash,
+}: {
+  stores: { id: string; name: string }[];
+  canCustomers: boolean;
+  cashSessions: OpenCashInfo[];
+  canManageCash: boolean;
+}) {
   const [storeId, setStoreId] = useState(stores[0]?.id ?? "");
   const [cart, setCart] = useState<CartLine[]>([]);
   const [customer, setCustomer] = useState<PickedCustomer | null>(null);
@@ -118,6 +130,7 @@ export default function PosScreen({ stores, canCustomers }: { stores: { id: stri
 
   return (
     <div className="grid gap-4 lg:grid-cols-[1fr_380px]">
+      <CashGate storeId={storeId} stores={stores} onStoreChange={changeStore} sessions={cashSessions} canManage={canManageCash} />
       <div className="space-y-4">
         {stores.length > 1 && (
           <select value={storeId} onChange={(e) => changeStore(e.target.value)} className="h-11 w-full rounded-xl border border-gray-300 bg-transparent px-4 text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white sm:w-64">

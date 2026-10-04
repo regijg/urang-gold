@@ -4,6 +4,7 @@ import { AppError } from "@/lib/action-result";
 import { dbRupiah, isUuid, sanitizeSearch, str } from "@/lib/validation/common";
 import { validateTradeIn } from "@/lib/validation/trade-in";
 import { getAppSession, requirePermission } from "@/server/auth/session";
+import { cashService } from "@/server/services/cash.service";
 import { mapDbError } from "@/server/db-errors";
 import { providerFor } from "@/server/payments/provider";
 import { PAGE_SIZE, type ListResult } from "@/server/repositories/crud";
@@ -67,6 +68,7 @@ export const tradeInService = {
       const first = parsed.errors.customerId ?? parsed.errors.items ?? parsed.errors.sellItems ?? parsed.errors.payments;
       throw new AppError("VALIDATION_ERROR", first ?? "Periksa kembali isian Anda.", parsed.errors);
     }
+    await cashService.requireOpen(parsed.data.store_id);
     const payments = await Promise.all(parsed.data.payments.map((p) => providerFor(p.method).prepare(p)));
     const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase.rpc("gold_create_trade_in", {

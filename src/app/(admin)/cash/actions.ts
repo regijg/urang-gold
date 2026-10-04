@@ -36,3 +36,14 @@ export async function closeCashAction(id: string, _prev: ActionResult | null, fo
     return toFailure(e);
   }
 }
+
+/** Opens the drawer from the POS / buyback / trade-in screen: no redirect, the screen refreshes itself. */
+export async function openCashHereAction(storeId: string, _prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
+  try {
+    await cashService.open({ storeId, openingAmount: formData.get("openingAmount"), notes: null });
+  } catch (e) {
+    return toFailure(e);
+  }
+  for (const path of ["/cash", "/sales/new", "/buybacks/new", "/trade-ins/new"]) revalidatePath(path);
+  return ok(null, "Kas dibuka.");
+}

@@ -8,6 +8,8 @@ import { createBuybackAction } from "@/app/(admin)/buybacks/actions";
 import BuybackLines, { buybackTotal, emptyBuybackLine, toBuybackPayload, type BuybackLine, type BuybackPurity } from "./BuybackLines";
 import CustomerPicker, { type PickedCustomer } from "./CustomerPicker";
 import PaymentEditor, { type PaymentRow } from "./PaymentEditor";
+import CashGate from "../cash/CashGate";
+import type { OpenCashInfo } from "@/server/services/cash.service";
 
 type Done = { buyback_id: string; buyback_number: string; total: string; public_token: string };
 // text colour set on the card so every amount inside is readable in light and dark mode
@@ -18,11 +20,15 @@ export default function BuybackForm({
   categories,
   purities,
   canOverridePrice,
+  cashSessions,
+  canManageCash,
 }: {
   stores: { id: string; name: string }[];
   categories: { id: string; name: string }[];
   purities: BuybackPurity[];
   canOverridePrice: boolean;
+  cashSessions: OpenCashInfo[];
+  canManageCash: boolean;
 }) {
   const [storeId, setStoreId] = useState(stores[0]?.id ?? "");
   const [customer, setCustomer] = useState<PickedCustomer | null>(null);
@@ -79,6 +85,7 @@ export default function BuybackForm({
 
   return (
     <div className="grid gap-4 lg:grid-cols-[1fr_360px]">
+      <CashGate storeId={storeId} stores={stores} onStoreChange={setStoreId} sessions={cashSessions} canManage={canManageCash} />
       <div className="space-y-4">
         {stores.length > 1 && (
           <select value={storeId} onChange={(e) => setStoreId(e.target.value)} className="h-11 rounded-lg border border-gray-300 bg-transparent px-3 dark:border-gray-700 dark:text-white">

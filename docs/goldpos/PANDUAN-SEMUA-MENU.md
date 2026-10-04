@@ -71,6 +71,7 @@ Kerjakan berurutan, karena menu di bawah bergantung pada yang di atasnya:
 **Untuk apa:** menjual barang ke customer. Ini menu yang paling sering dipakai kasir.
 
 **Alur:**
+0. Kalau kas outlet belum terbuka, isi **modal kas awal** di dialog **Buka Kas** yang muncul otomatis. Setelah kas terbuka, bar hijau "Kas terbuka" tampil di atas layar Kasir.
 1. **Scan barcode** barang, atau cari nama barangnya.
 2. Sistem menghitung harga: `berat emas × harga/gram kadar + ongkos + harga batu + margin − diskon`.
 3. Pilih customer (opsional) dan beri diskon kalau diizinkan.
@@ -81,6 +82,7 @@ Kerjakan berurutan, karena menu di bawah bergantung pada yang di atasnya:
 **Pengaman:**
 - Harga selalu dihitung ulang oleh sistem, kasir tidak bisa mengetik harga sendiri.
 - Kalau harga emas diubah saat kasir sedang melayani, kasir diminta mengonfirmasi harga terbaru.
+- **Kas outlet harus sudah dibuka.** Kalau belum, layar Kasir menampilkan dialog **Buka Kas** (isi modal awal) dan penjualan tidak bisa dilakukan sebelum kas dibuka. Server juga menolak transaksi tanpa kas terbuka.
 - Barang hanya bisa dijual kalau berstatus **Tersedia** di outlet yang sama.
 - Harga emas untuk kadar barang itu harus sudah diisi di menu Harga Emas.
 
@@ -91,7 +93,7 @@ Kerjakan berurutan, karena menu di bawah bergantung pada yang di atasnya:
 **Untuk apa:** mengontrol **uang tunai di laci**. Membuka kas saat toko buka dan menutupnya saat tutup, supaya selisih uang langsung ketahuan.
 
 **Alur:**
-1. **Buka kas:** pilih outlet, isi **modal awal di laci**. Setiap outlet hanya boleh punya **satu kas yang terbuka** sekaligus. Nomor sesi dibuat otomatis.
+1. **Buka kas:** isi **modal awal di laci**. Bisa dari menu Kas Harian, atau langsung dari dialog **Buka Kas** yang muncul otomatis di layar **Kasir, Buyback, dan Tukar Tambah** kalau kas outlet belum terbuka. Setiap outlet hanya boleh punya **satu kas yang terbuka** sekaligus. Nomor sesi dibuat otomatis.
 2. **Selama toko buka:** semua transaksi tunai (penjualan, buyback, biaya, DP, servis) otomatis masuk hitungan. Kalau ada uang keluar-masuk di luar transaksi, catat manual lewat **Kas masuk/keluar**: tambah modal, setor ke bank, ambil untuk belanja. Keterangan wajib diisi.
 3. **Tutup kas:** hitung uang fisik di laci lalu isi jumlahnya. Sistem membandingkan dengan jumlah yang **seharusnya** ada:
 
@@ -100,6 +102,10 @@ Kerjakan berurutan, karena menu di bawah bergantung pada yang di atasnya:
    ```
 4. Kalau uang fisik **tidak sama** dengan seharusnya, **catatan wajib diisi** untuk menjelaskan selisihnya.
 5. Riwayat semua sesi kas tersimpan (nomor, jam buka/tutup, seharusnya, dihitung, selisih).
+
+**Kas wajib terbuka untuk:** Kasir (penjualan), **Buyback**, dan **Tukar Tambah**, karena ketiganya memindahkan uang tunai. Pesanan & DP, Servis, Pembelian, dan Biaya Operasional **tidak** diblokir, jadi admin atau manager tetap bisa mencatatnya tanpa membuka kas.
+
+**Di layar Kasir/Buyback/Tukar Tambah:** selama kas terbuka tampil bar hijau berisi nomor sesi, jam buka, modal awal, dan tautan **Tutup Kas** (hanya untuk akun yang punya izin Kas Harian). Akun tanpa izin Kas Harian tidak bisa membuka kas sendiri dan diminta meminta akun lain yang berizin.
 
 ---
 

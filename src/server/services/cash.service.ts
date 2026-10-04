@@ -1,8 +1,9 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { AppError } from "@/lib/action-result";
 import { dbRupiah, isUuid, requiredText, str, type FieldErrors } from "@/lib/validation/common";
 import { rupiahField } from "@/lib/validation/operations";
-import { requirePermission } from "@/server/auth/session";
+import { getAppSession, requirePermission } from "@/server/auth/session";
 import { mapDbError } from "@/server/db-errors";
 import { PAGE_SIZE, type ListResult } from "@/server/repositories/crud";
 
@@ -21,6 +22,9 @@ export type CashSessionRow = {
   close_notes: string | null;
   store: { name: string } | null;
 };
+
+/** What the POS screens need to know about an open drawer. */
+export type OpenCashInfo = { id: string; store_id: string; session_number: string; opened_at: string; opening_amount: string };
 
 export type CashMovement = { id: string; direction: "IN" | "OUT"; amount: string; reason: string; created_at: string };
 
@@ -69,6 +73,34 @@ function normalizeTotals(t: Record<string, unknown>): CashTotals {
 }
 
 export const cashService = {
+  /**
+   * Open drawers of the given outlets, for the POS / buyback / trade-in screens and their guard.
+   * Read with the service role because cashiers without the cash report permission cannot read
+   * gold_cash_sessions through RLS; scoped to the caller's own tenant.
+   */
+  async openForStores(storeIds: string[]): Promise<OpenCashInfo[]> {
+    const session = await getAppSession();
+    const ids = storeIds.filter(isUuid);
+    if (!session || ids.length === 0) return [];
+    const { data, error } = await createSupabaseAdminClient()
+      .from("gold_cash_sessions")
+      .select("id, store_id, session_number, opened_at, opening_amount")
+      .eq("tenant_id", session.tenant.id)
+      .eq("status", "OPEN")
+      .in("store_id", ids);
+    if (error) throw mapDbError(error);
+    return ((data ?? []) as OpenCashInfo[]).map((r) => ({ ...r, opening_amount: dbRupiah(r.opening_amount) }));
+  },
+
+  /** Cash-handling transactions (sale, buyback, trade-in) need an open drawer at that outlet. */
+  async requireOpen(storeId: unknown): Promise<void> {
+    const id = str(storeId);
+    if (!isUuid(id)) return; // the form validation reports a missing outlet
+    if ((await cashService.openForStores([id])).length === 0) {
+      throw new AppError("CASH_NOT_OPEN", "Kas outlet ini belum dibuka. Buka kas dulu sebelum bertransaksi.");
+    }
+  },
+
   /** Open drawers of the stores the user can access (RLS) */
   async openSessions(): Promise<CashSessionRow[]> {
     await requirePermission("cash.manage");

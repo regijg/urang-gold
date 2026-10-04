@@ -9,6 +9,8 @@ import BuybackLines, { buybackTotal, emptyBuybackLine, toBuybackPayload, type Bu
 import CartPanel, { type CartLine } from "./CartPanel";
 import CustomerPicker, { type PickedCustomer } from "./CustomerPicker";
 import PaymentEditor, { type PaymentRow } from "./PaymentEditor";
+import CashGate from "../cash/CashGate";
+import type { OpenCashInfo } from "@/server/services/cash.service";
 import { waLink } from "@/lib/whatsapp";
 
 type Done = { trade_in_id: string; trade_in_number: string; sale_id: string; buyback_id: string; balance: string; change_amount: string; public_token: string };
@@ -20,11 +22,15 @@ export default function TradeInForm({
   categories,
   purities,
   canOverridePrice,
+  cashSessions,
+  canManageCash,
 }: {
   stores: { id: string; name: string }[];
   categories: { id: string; name: string }[];
   purities: BuybackPurity[];
   canOverridePrice: boolean;
+  cashSessions: OpenCashInfo[];
+  canManageCash: boolean;
 }) {
   const [storeId, setStoreId] = useState(stores[0]?.id ?? "");
   const [customer, setCustomer] = useState<PickedCustomer | null>(null);
@@ -113,6 +119,7 @@ export default function TradeInForm({
 
   return (
     <div className="grid gap-4 xl:grid-cols-[1fr_1fr_360px]">
+      <CashGate storeId={storeId} stores={stores} onStoreChange={(id) => { setStoreId(id); setCart([]); }} sessions={cashSessions} canManage={canManageCash} />
       <div className="space-y-4">
         <h2 className="text-base font-semibold text-gray-900 dark:text-white">1. Barang lama (dibeli toko)</h2>
         <BuybackLines lines={lines} setLines={setLines} categories={categories} purities={purities} canOverridePrice={canOverridePrice} fieldErrors={fieldErrors} onError={(m) => setMessage(m ? { kind: "error", text: m } : null)} />

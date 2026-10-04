@@ -4,6 +4,7 @@ import { dbRupiah, isUuid, str } from "@/lib/validation/common";
 import { validateCustomer } from "@/lib/validation/master-data";
 import { validateCheckout } from "@/lib/validation/sales";
 import { getAppSession, requirePermission } from "@/server/auth/session";
+import { cashService } from "@/server/services/cash.service";
 import { mapDbError } from "@/server/db-errors";
 import { providerFor } from "@/server/payments/provider";
 import { customerRepository } from "@/server/repositories/master-data.repository";
@@ -62,6 +63,7 @@ export const salesService = {
     if (!parsed.valid) {
       throw new AppError("VALIDATION_ERROR", parsed.errors.items ?? parsed.errors.payments ?? "Periksa kembali transaksi.", parsed.errors);
     }
+    await cashService.requireOpen(parsed.data.store_id);
     // Payment providers confirm/prepare each payment before the DB commit.
     const payments = await Promise.all(parsed.data.payments.map((p) => providerFor(p.method).prepare(p)));
     const supabase = await createSupabaseServerClient();
