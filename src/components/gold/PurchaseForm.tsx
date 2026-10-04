@@ -3,7 +3,7 @@
 import DateInput from "./DateInput";
 import Link from "next/link";
 import React, { useState, useTransition } from "react";
-import { formatRupiah } from "@/lib/format";
+import { formatRupiah, onlyDigits } from "@/lib/format";
 import { parseRupiah } from "@/lib/validation/common";
 import { subRupiah, sumRupiah } from "@/lib/validation/sales";
 import { createPurchaseAction } from "@/app/(admin)/purchases/actions";
@@ -11,7 +11,14 @@ import PaymentEditor, { type PaymentRow } from "./pos/PaymentEditor";
 import RupiahInput from "@/components/gold/RupiahInput";
 
 type Option = { value: string; label: string };
+/** Product master values used to prefill a row; the user can still edit every field. */
+type ProductOption = Option & { grossWeight: string; stoneWeight: string; costPrice: string; laborCost: string };
 type Row = { key: number; productId: string; grossWeight: string; stoneWeight: string; serialNumber: string; costPrice: string; laborCost: string };
+const gram = (v: string) => (Number(v) > 0 ? String(Number(v)) : "");
+const rupiah = (v: string) => {
+  const d = onlyDigits(String(v ?? "").replace(/[.,]\d{1,2}$/, ""));
+  return d === "0" ? "" : d;
+};
 const emptyRow = (key: number): Row => ({ key, productId: "", grossWeight: "", stoneWeight: "", serialNumber: "", costPrice: "", laborCost: "" });
 const cell =
   "h-10 w-full rounded-lg border bg-transparent px-3 text-sm text-gray-800 focus:border-brand-300 focus:outline-hidden dark:bg-gray-900 dark:text-white/90";
@@ -25,7 +32,7 @@ export default function PurchaseForm({
   today,
 }: {
   suppliers: Option[];
-  products: Option[];
+  products: ProductOption[];
   stores: Option[];
   locations: { id: string; store_id: string; code: string; name: string }[];
   today: string;
@@ -42,6 +49,16 @@ export default function PurchaseForm({
   const total = sumRupiah(rows.flatMap((r) => [parseRupiah(r.costPrice) ?? "0", parseRupiah(r.laborCost) ?? "0"]));
   const paid = sumRupiah(payments.map((p) => p.amount || "0"));
   const setRow = (key: number, patch: Partial<Row>) => setRows((rs) => rs.map((r) => (r.key === key ? { ...r, ...patch } : r)));
+  /** Choosing a product fills weight, stone, cost and labor from the product master (all still editable). */
+  const pickProduct = (key: number, productId: string) => {
+    const p = products.find((x) => x.value === productId);
+    setRow(
+      key,
+      p
+        ? { productId, grossWeight: gram(p.grossWeight), stoneWeight: gram(p.stoneWeight), costPrice: rupiah(p.costPrice), laborCost: rupiah(p.laborCost) }
+        : { productId }
+    );
+  };
   const nextKey = () => Math.max(0, ...rows.map((r) => r.key)) + 1;
 
   function submit() {
@@ -135,7 +152,7 @@ export default function PurchaseForm({
               {rows.map((r, i) => (
                 <tr key={r.key}>
                   <td className="min-w-48 px-1 py-1">
-                    <select value={r.productId} onChange={(e) => setRow(r.key, { productId: e.target.value })} className={`${cell} ${border(`productId.${i}`)}`}>
+                    <select value={r.productId} onChange={(e) => pickProduct(r.key, e.target.value)} className={`${cell} ${border(`productId.${i}`)}`}>
                       <option value="">Pilih</option>
                       {products.map((p) => <option key={p.value} value={p.value}>{p.label}</option>)}
                     </select>

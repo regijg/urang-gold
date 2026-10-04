@@ -33,11 +33,13 @@ export function ExpenseForm({
           <CurrencyField name="amount" label="Nominal" error={errors.amount} required />
         </div>
         <TextField name="description" label="Keterangan" placeholder="mis. Token listrik Oktober" error={errors.description} required />
-        <div className="grid gap-3 sm:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-2">
           <DateField name="expenseDate" label="Tanggal" defaultValue={today} max={today} error={errors.expenseDate} />
           <SelectField name="method" label="Dibayar dengan" options={PAYMENT_METHODS.map((m) => ({ value: m, label: PAYMENT_LABELS[m] }))} defaultValue="CASH" error={errors.method} />
           {stores.length > 1 ? (
-            <SelectField name="storeId" label="Outlet" options={stores} error={errors.storeId} />
+            <div className="sm:col-span-2">
+              <SelectField name="storeId" label="Outlet" options={stores} error={errors.storeId} />
+            </div>
           ) : (
             <input type="hidden" name="storeId" value={stores[0]?.value ?? ""} />
           )}

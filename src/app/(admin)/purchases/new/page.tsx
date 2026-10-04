@@ -24,7 +24,14 @@ export default async function NewPurchasePage() {
       <PageHeader title="Pembelian dari Supplier" description="Barang yang diterima langsung masuk inventory." back={{ href: "/purchases", label: "Pembelian" }} />
       <PurchaseForm
         suppliers={suppliers.rows.map((s) => ({ value: s.id, label: s.name }))}
-        products={products.rows.map((p) => ({ value: p.id, label: `${p.sku} — ${p.name} (${p.purity?.code ?? "-"})` }))}
+        products={products.rows.map((p) => ({
+          value: p.id,
+          label: `${p.sku} — ${p.name} (${p.purity?.code ?? "-"})`,
+          grossWeight: p.gross_weight,
+          stoneWeight: p.stone_weight,
+          costPrice: p.cost_price,
+          laborCost: p.labor_cost,
+        }))}
         stores={stores.map((s) => ({ value: s.id, label: s.name }))}
         locations={locations}
         today={todayJakarta()}
