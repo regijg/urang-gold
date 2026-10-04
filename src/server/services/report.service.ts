@@ -95,9 +95,13 @@ export const reportService = {
     return rows.map((r) => ({ ...r, cost_value: dbRupiah(r.cost_value), market_value: dbRupiah(r.market_value) }));
   },
 
-  async customers(range: DateRange): Promise<CustomerReportRow[]> {
+  /** With an outlet selected this uses gold_report_customers_by_store (migration 17); without one the original function. */
+  async customers(range: DateRange, storeId?: string): Promise<CustomerReportRow[]> {
     await requirePermission("reports.view");
-    const rows = await call<CustomerReportRow>("gold_report_customers", { p_from: range.fromIso, p_to: range.toIso, p_limit: 100 });
+    const s = store(storeId);
+    const rows = s
+      ? await call<CustomerReportRow>("gold_report_customers_by_store", { p_from: range.fromIso, p_to: range.toIso, p_store_id: s, p_limit: 100 })
+      : await call<CustomerReportRow>("gold_report_customers", { p_from: range.fromIso, p_to: range.toIso, p_limit: 100 });
     return rows.map((r) => ({ ...r, sales_total: dbRupiah(r.sales_total), buyback_total: dbRupiah(r.buyback_total) }));
   },
 

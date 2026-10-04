@@ -400,12 +400,19 @@ Yang wajib adalah **barangnya sudah ada di Inventory dengan status Tersedia** di
 | **Laba/Rugi & Ringkasan** | Penjualan, diskon, harga pokok, **laba kotor**, biaya operasional per kategori, pendapatan servis dan DP hangus, hingga **laba bersih** |
 | **Penjualan** | Rincian barang terjual: harga, modal, laba per barang |
 | **Buyback** | Barang yang dibeli dari customer: berat dan nilai |
+| **Tukar Tambah** | Tiap transaksi tukar tambah: nilai barang lama, harga barang baru, dan selisih (minus berarti toko membayar customer) |
+| **Pesanan & DP** | Pesanan berjalan dengan sisa tagihan dan DP yang sudah masuk, serta pesanan yang dibatalkan beserta **DP hangus** (pendapatan toko) |
+| **Servis** | Servis diterima, yang belum diambil, yang sudah diambil, dan **pendapatan servis** (angkanya sama dengan yang masuk ke Laba Bersih) |
 | **Pembelian** | Pembelian dari supplier dan status pembayarannya |
+| **Biaya** | Daftar biaya operasional satu per satu (tanggal, kategori, metode bayar, nominal, yang dibatalkan beserta alasannya) dan totalnya |
+| **Kas Harian** | Semua sesi kas: modal awal, seharusnya, dihitung, dan **selisih** (Cocok / Kurang / Lebih) per sesi, siapa yang membuka, serta total selisih periode |
 | **Stok** | Jumlah, berat emas, nilai modal, dan nilai jual per kadar/kategori |
 | **Mutasi** | Semua perpindahan barang |
 | **Stock Opname** | Riwayat hitung fisik dan selisihnya |
 | **Pembayaran & Arus Kas** | Uang masuk dan keluar per metode, untuk dicocokkan dengan laci kas dan mutasi rekening |
-| **Customer** | Customer dengan transaksi terbanyak |
+| **Customer** | Customer dengan transaksi terbanyak (ikut filter outlet) |
+
+Tiap tab memiliki kartu ringkasan di atas tabel. Nomor dokumen (kas, pesanan, servis, tukar tambah) bisa diklik untuk membuka detailnya. Tombol **Export CSV** tersedia di semua tab. Di tab Laba/Rugi ada dua ekspor: **Laba/Rugi** (angka laba rugi beserta rincian biaya) dan **harian** (tabel per tanggal). Untuk PDF, tekan **Cetak / Simpan PDF** lalu pilih "Simpan sebagai PDF" di dialog cetak browser. Hasil cetaknya sudah dirapikan: kop laporan (nama toko, jenis laporan, periode, outlet, waktu data dan siapa yang mencetak), kartu ringkasan, tabel dengan judul kolom yang berulang di tiap halaman, kertas A4 landscape, serta kolom tanda tangan (Dibuat, Diperiksa, Disetujui) di akhir. Tampilan otomatis memakai warna terang walau aplikasi sedang di mode gelap, dan nama file PDF-nya otomatis berisi jenis laporan, periode, dan nama toko.
 
 **Rutinitas tutup toko:** buka tab *Pembayaran & Arus Kas*, cocokkan dengan uang di laci (tutup di **Kas Harian**), lalu lihat ringkasan di Dashboard.
 

@@ -835,6 +835,44 @@ span.flatpickr-weekday,
   }
 }
 
+/* Laporan: A4 landscape, tabel tidak terpotong, kepala tabel berulang di tiap halaman.
+   Halaman bernama (page: report) supaya cetak nota/struk tidak ikut berubah. */
+@page report {
+  size: A4 landscape;
+  margin: 12mm;
+  @bottom-center {
+    content: "Halaman " counter(page) " dari " counter(pages);
+    font-size: 9px;
+    color: #6b7280;
+  }
+}
+@media print {
+  .report-print {
+    page: report;
+  }
+  .report-print table {
+    width: 100%;
+    font-size: 11px;
+  }
+  .report-print th,
+  .report-print td {
+    padding: 4px 8px !important;
+  }
+  .report-print thead {
+    display: table-header-group;
+  }
+  .report-print tr {
+    break-inside: avoid;
+  }
+  .report-print [class*="overflow-x-auto"],
+  .report-print [class*="overflow-hidden"] {
+    overflow: visible !important;
+  }
+  .report-print * {
+    box-shadow: none !important;
+  }
+}
+
 /* UrangGold density: smaller base size on laptop/desktop so forms fit without much scrolling.
    Phones/tablets keep 16px (touch targets, and iOS zooms inputs with text < 16px). */
 @media (min-width: 1024px) {

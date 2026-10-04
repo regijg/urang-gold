@@ -46,6 +46,8 @@ Toko baru tidak bisa mendaftar sendiri. Pelanggan menghubungi pemilik aplikasi, 
 
 Angka omzet dan jumlah pengguna butuh migration `20261005000016_gold_platform_console.sql`. Tanpa itu daftar toko tetap tampil, tanpa angka.
 
+Migration `20261005000017_gold_report_customers_by_store.sql` menambah filter outlet untuk laporan Customer. Tanpa itu tab Customer tetap jalan, tetapi memilih satu outlet akan menampilkan error.
+
 ## 4. Checklist setelah deploy
 
 - [ ] Buat akun pemilik aplikasi dan toko pertama dari `/platform` (bagian 3a).

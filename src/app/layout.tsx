@@ -5,6 +5,7 @@ import { SidebarProvider } from '@/context/SidebarContext';
 import { ThemeProvider } from '@/context/ThemeContext';
 import ChunkErrorBoundary from '@/components/ChunkErrorBoundary';
 import NavigationProgress from '@/components/common/NavigationProgress';
+import { PrintLightMode } from '@/components/gold/PrintMode';
 import { Metadata } from 'next';
 
 const outfit = Outfit({
@@ -42,6 +43,7 @@ export default function RootLayout({
       </head>
       <body className={`${outfit.className} dark:bg-gray-900`}>
         <NavigationProgress />
+        <PrintLightMode />
         <ThemeProvider>
           <SidebarProvider>
             <ChunkErrorBoundary>

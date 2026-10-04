@@ -3,8 +3,12 @@ import { AppError } from "@/lib/action-result";
 import { toCsv } from "@/lib/csv";
 import { resolveRange } from "@/lib/date-range";
 import { PAYMENT_LABELS } from "@/lib/payments";
+import { netProfit } from "@/lib/profit";
 import { dbRupiah } from "@/lib/validation/common";
+import { CASH_STATUS_LABELS, EXPENSE_STATUS_LABELS, ORDER_STATUS_LABELS, REPAIR_STATUS_LABELS, TRADE_IN_STATUS_LABELS, cashDifferenceLabel } from "@/lib/report-labels";
 import { MOVEMENT_LABELS } from "@/lib/validation/inventory";
+import { EXPENSE_LABELS, type ExpenseCategory } from "@/lib/validation/operations";
+import { reportOpsService } from "@/server/services/report-ops.service";
 import { reportService } from "@/server/services/report.service";
 
 type Row = Record<string, unknown>;
@@ -15,6 +19,61 @@ async function build(kind: string, sp: URLSearchParams): Promise<{ headers: stri
   const range = resolveRange({ range: sp.get("range") ?? undefined, from: sp.get("from") ?? undefined, to: sp.get("to") ?? undefined });
   const store = sp.get("store") ?? undefined;
   switch (kind) {
+    case "profitloss": {
+      const [s, ops, expenses] = await Promise.all([reportService.summary(range, store), reportService.operations(range, store), reportService.expensesByCategory(range, store)]);
+      const net = netProfit(s.gross_profit, ops.repair_income, ops.order_forfeit, ops.expense_total);
+      return {
+        headers: ["Keterangan", "Nilai"],
+        rows: [
+          ["Periode", `${range.fromDate} s/d ${range.toDate}`],
+          ["Penjualan (setelah diskon)", s.sales_total],
+          ["Jumlah transaksi penjualan", s.sales_count],
+          ["Diskon diberikan", s.sales_discount],
+          ["Harga pokok penjualan (HPP)", s.sales_cost],
+          ["Laba kotor", s.gross_profit],
+          ["Pendapatan servis", ops.repair_income],
+          ["DP pesanan hangus", ops.order_forfeit],
+          ["Biaya operasional", ops.expense_total],
+          ["Laba bersih", net],
+          ...expenses.map((e): (string | number)[] => [`Biaya: ${EXPENSE_LABELS[e.category as ExpenseCategory] ?? e.category}`, e.total]),
+        ],
+      };
+    }
+    case "expenses": {
+      const rows = await reportOpsService.expenses(range, store);
+      return {
+        headers: ["Nomor", "Tanggal", "Kategori", "Keterangan", "Nominal", "Dibayar dengan", "Outlet", "Status", "Alasan batal"],
+        rows: rows.map((r) => [r.number, r.date, r.category, r.description, r.amount, PAYMENT_LABELS[r.method] ?? r.method, r.store, EXPENSE_STATUS_LABELS[r.status] ?? r.status, r.void_reason]),
+      };
+    }
+    case "cash": {
+      const rows = await reportOpsService.cash(range, store);
+      return {
+        headers: ["Nomor", "Outlet", "Dibuka", "Ditutup", "Dibuka oleh", "Status", "Modal awal", "Seharusnya", "Dihitung", "Selisih", "Keterangan selisih", "Catatan"],
+        rows: rows.map((r) => [r.number, r.store, r.opened_at, r.closed_at, r.opened_by, CASH_STATUS_LABELS[r.status] ?? r.status, r.opening, r.expected, r.counted, r.difference, cashDifferenceLabel(r.difference), r.notes]),
+      };
+    }
+    case "orders": {
+      const rows = await reportOpsService.orders(range, store);
+      return {
+        headers: ["Nomor", "Dibuat", "Customer", "Outlet", "Status", "Total", "Dibayar (DP)", "Dikembalikan", "Sisa tagihan", "DP hangus", "Rencana diambil", "Dibatalkan", "Alasan batal"],
+        rows: rows.map((r) => [r.number, r.created_at, r.customer, r.store, ORDER_STATUS_LABELS[r.status] ?? r.status, r.total, r.paid, r.refund, r.outstanding, r.forfeited, r.due_date, r.cancelled_at, r.cancel_reason]),
+      };
+    }
+    case "repairs": {
+      const rows = await reportOpsService.repairs(range, store);
+      return {
+        headers: ["Nomor", "Diterima", "Customer", "Outlet", "Barang", "Jenis servis", "Status", "Perkiraan biaya", "Biaya akhir", "Dibayar", "Dikembalikan", "Janji selesai", "Diambil", "Alasan batal"],
+        rows: rows.map((r) => [r.number, r.created_at, r.customer, r.store, r.item, r.service, REPAIR_STATUS_LABELS[r.status] ?? r.status, r.estimated, r.final, r.paid, r.refund, r.due_date, r.picked_up_at, r.cancel_reason]),
+      };
+    }
+    case "tradeins": {
+      const rows = await reportOpsService.tradeIns(range, store);
+      return {
+        headers: ["Nomor", "Waktu", "Customer", "Outlet", "Nilai barang lama", "Harga barang baru", "Selisih dibayar customer", "Status", "Alasan batal"],
+        rows: rows.map((r) => [r.number, r.created_at, r.customer, r.store, r.trade_in_value, r.sale_total, r.balance, TRADE_IN_STATUS_LABELS[r.status] ?? r.status, r.void_reason]),
+      };
+    }
     case "daily": {
       const rows = await reportService.daily(range, store);
       return { headers: ["Tanggal", "Penjualan", "Jumlah transaksi", "Emas terjual (g)", "Buyback", "Emas dibeli (g)", "Pembelian"], rows: rows.map((r) => [r.day, r.sales_total, r.sales_count, r.gold_sold, r.buyback_total, r.gold_bought, r.purchase_total]) };
@@ -28,7 +87,7 @@ async function build(kind: string, sp: URLSearchParams): Promise<{ headers: stri
       return { headers: ["Kadar", "Kategori", "Jumlah", "Berat emas (g)", "Nilai modal", "Nilai jual"], rows: rows.map((r) => [r.purity_code, r.category_name, r.item_count, r.gold_weight, r.cost_value, r.market_value]) };
     }
     case "customers": {
-      const rows = await reportService.customers(range);
+      const rows = await reportService.customers(range, store);
       return { headers: ["Customer", "No. HP", "Jml beli", "Total beli", "Jml buyback", "Total buyback"], rows: rows.map((r) => [r.name, r.phone, r.sales_count, r.sales_total, r.buyback_count, r.buyback_total]) };
     }
     case "sales": {

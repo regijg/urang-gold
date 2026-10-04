@@ -5,8 +5,11 @@ import PageHeader from "@/components/gold/PageHeader";
 import RangeFilter from "@/components/gold/RangeFilter";
 import DailyChart from "@/components/gold/charts/DailyChart";
 import PrintButton from "@/components/gold/pos/PrintButton";
+import { PrintTitle } from "@/components/gold/PrintMode";
+import { ReportPrintFooter, ReportPrintHeader } from "@/components/gold/ReportPrint";
 import { resolveRange } from "@/lib/date-range";
-import { formatDateOnly, formatGram, formatRupiah } from "@/lib/format";
+import { netProfit } from "@/lib/profit";
+import { formatDateOnly, formatDateTime, formatGram, formatRupiah } from "@/lib/format";
 import { PAYMENT_LABELS } from "@/lib/payments";
 import { dbRupiah } from "@/lib/validation/common";
 import { MOVEMENT_LABELS } from "@/lib/validation/inventory";
@@ -15,6 +18,7 @@ import { subRupiah } from "@/lib/validation/sales";
 import { loadPage, requirePagePermission } from "@/server/page-guard";
 import { storeService } from "@/server/services/inventory.service";
 import { reportService, type CustomerReportRow, type DailyRow, type InventoryReportRow, type PaymentReportRow } from "@/server/services/report.service";
+import { CashTab, ExpensesTab, OrdersTab, RepairsTab, TradeInsTab } from "./ops-tabs";
 
 export const metadata: Metadata = { title: "Laporan | UrangGold" };
 
@@ -22,7 +26,12 @@ const TABS = [
   { key: "summary", label: "Laba/Rugi & Ringkasan" },
   { key: "sales", label: "Penjualan" },
   { key: "buybacks", label: "Buyback" },
+  { key: "tradeins", label: "Tukar Tambah" },
+  { key: "orders", label: "Pesanan & DP" },
+  { key: "repairs", label: "Servis" },
   { key: "purchases", label: "Pembelian" },
+  { key: "expenses", label: "Biaya" },
+  { key: "cash", label: "Kas Harian" },
   { key: "inventory", label: "Stok" },
   { key: "movements", label: "Mutasi" },
   { key: "opname", label: "Stock Opname" },
@@ -46,16 +55,24 @@ function Line({ label, value, strong }: { label: string; value: string; strong?:
 
 export default async function ReportsPage({ searchParams }: { searchParams: Promise<Search> }) {
   const sp = await searchParams;
-  await requirePagePermission("reports.view");
+  const session = await requirePagePermission("reports.view");
   const tab: Tab = (TABS.find((t) => t.key === sp.tab)?.key ?? "summary") as Tab;
   const range = resolveRange(sp);
   const stores = await loadPage(() => storeService.list());
   const qs = new URLSearchParams(Object.entries({ range: range.preset, from: range.fromDate, to: range.toDate, store: sp.store ?? "" }).filter(([, v]) => v)).toString();
-  const csvKind = tab === "summary" ? "daily" : tab;
+  // Laba/Rugi exports its own figures; the daily table under it has a separate export
+  const csvKind = tab === "summary" ? "profitloss" : tab;
+  const periodLabel = range.fromDate === range.toDate ? formatDateOnly(range.fromDate) : `${formatDateOnly(range.fromDate)} – ${formatDateOnly(range.toDate)}`;
+  const tabLabel = TABS.find((t) => t.key === tab)?.label ?? "";
+  const storeLabel = stores.find((s) => s.id === sp.store)?.name ?? "Semua outlet";
 
   return (
-    <>
-      <PageHeader title="Laporan" description={`Periode ${range.fromDate === range.toDate ? formatDateOnly(range.fromDate) : `${formatDateOnly(range.fromDate)} – ${formatDateOnly(range.toDate)}`}`} />
+    <div className="report-print">
+      <PrintTitle title={`Laporan ${tabLabel} ${range.fromDate}${range.fromDate === range.toDate ? "" : ` s.d. ${range.toDate}`} - ${session.tenant.name}`} />
+      <ReportPrintHeader tenantName={session.tenant.name} title={tabLabel} period={periodLabel} storeName={storeLabel} generatedAt={formatDateTime(new Date())} generatedBy={session.fullName} />
+      <div className="print:hidden">
+        <PageHeader title="Laporan" description={`Periode ${periodLabel}`} />
+      </div>
       <nav className="mb-4 flex flex-wrap gap-2 print:hidden">
         {TABS.map((t) => (
           <Link key={t.key} href={`/reports?tab=${t.key}&${qs}`} className={`rounded-lg px-3 py-1.5 text-sm ${tab === t.key ? "bg-brand-500 text-white" : "border border-gray-300 text-gray-700 dark:border-gray-700 dark:text-gray-300"}`}>
@@ -66,17 +83,28 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
       <RangeFilter range={range} stores={stores} store={sp.store} hidden={{ tab }} />
       <div className="mb-4 flex gap-2 print:hidden">
         <a href={`/api/reports/${csvKind}?${qs}`} className="rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-700 dark:text-gray-300">
-          Export CSV
+          {tab === "summary" ? "Export Laba/Rugi (CSV)" : "Export CSV"}
         </a>
-        <PrintButton />
+        {tab === "summary" && (
+          <a href={`/api/reports/daily?${qs}`} className="rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-700 dark:text-gray-300">
+            Export harian (CSV)
+          </a>
+        )}
+        <PrintButton label="Cetak / Simpan PDF" />
       </div>
 
       {tab === "summary" && <SummaryTab range={range} store={sp.store} />}
       {tab === "inventory" && <InventoryTab store={sp.store} />}
       {tab === "payments" && <PaymentsTab range={range} store={sp.store} />}
-      {tab === "customers" && <CustomersTab range={range} />}
+      {tab === "customers" && <CustomersTab range={range} store={sp.store} />}
+      {tab === "tradeins" && <TradeInsTab range={range} store={sp.store} />}
+      {tab === "orders" && <OrdersTab range={range} store={sp.store} />}
+      {tab === "repairs" && <RepairsTab range={range} store={sp.store} />}
+      {tab === "expenses" && <ExpensesTab range={range} store={sp.store} />}
+      {tab === "cash" && <CashTab range={range} store={sp.store} />}
       {(tab === "sales" || tab === "buybacks" || tab === "purchases" || tab === "movements" || tab === "opname") && <DetailTab kind={tab} range={range} store={sp.store} />}
-    </>
+      <ReportPrintFooter />
+    </div>
   );
 }
 
@@ -84,10 +112,9 @@ async function SummaryTab({ range, store }: { range: ReturnType<typeof resolveRa
   const [s, daily, ops, expenses] = await loadPage(() =>
     Promise.all([reportService.summary(range, store), reportService.daily(range, store), reportService.operations(range, store), reportService.expensesByCategory(range, store)])
   );
-  // DB values may be negative (a loss): BigInt directly, not the input parsers
-  const net = (BigInt(s.gross_profit) + BigInt(ops.repair_income) + BigInt(ops.order_forfeit) - BigInt(ops.expense_total)).toString();
+  const net = netProfit(s.gross_profit, ops.repair_income, ops.order_forfeit, ops.expense_total);
   return (
-    <div className="grid gap-6 lg:grid-cols-2">
+    <div className="grid gap-6 lg:grid-cols-2 print:grid-cols-2">
       <div className="rounded-2xl border border-gray-200 bg-white p-5 text-sm dark:border-gray-800 dark:bg-gray-900">
         <h2 className="mb-2 font-semibold text-gray-900 dark:text-white">Laba / Rugi</h2>
         <dl>
@@ -183,8 +210,8 @@ async function PaymentsTab({ range, store }: { range: ReturnType<typeof resolveR
   );
 }
 
-async function CustomersTab({ range }: { range: ReturnType<typeof resolveRange> }) {
-  const rows = await loadPage(() => reportService.customers(range));
+async function CustomersTab({ range, store }: { range: ReturnType<typeof resolveRange>; store?: string }) {
+  const rows = await loadPage(() => reportService.customers(range, store));
   return (
     <DataTable<CustomerReportRow>
       rows={rows}
