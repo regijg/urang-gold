@@ -1,5 +1,6 @@
 "use client";
 
+import DateInput from "./DateInput";
 import Link from "next/link";
 import React, { useState, useTransition } from "react";
 import { formatRupiah } from "@/lib/format";
@@ -95,7 +96,7 @@ export default function PurchaseForm({
           </label>
           <label className="text-xs text-gray-500">
             Tanggal *
-            <input autoComplete="off" type="date" max={today} value={head.purchaseDate} onChange={(e) => setHead({ ...head, purchaseDate: e.target.value })} className={`${cell} ${border("purchaseDate")}`} />
+            <DateInput max={today} value={head.purchaseDate} onChange={(v) => setHead({ ...head, purchaseDate: v })} className={`${cell} ${border("purchaseDate")}`} />
             {err("purchaseDate")}
           </label>
           <label className="text-xs text-gray-500">

@@ -1,5 +1,6 @@
 "use client";
 
+import DateInput from "../DateInput";
 import { useRouter } from "next/navigation";
 import React, { useMemo, useState, useTransition } from "react";
 import { formatRupiah } from "@/lib/format";
@@ -102,7 +103,9 @@ export default function OrderForm({ stores, today }: { stores: { id: string; nam
         <div className={`${card} space-y-2`}>
           <label className="block text-sm text-gray-600 dark:text-gray-400">
             Rencana diambil
-            <input type="date" value={dueDate} min={today} onChange={(e) => setDueDate(e.target.value)} className={`${field} mt-1`} />
+            <div className="mt-1">
+              <DateInput value={dueDate} min={today} onChange={setDueDate} className={field} />
+            </div>
           </label>
           <input autoComplete="off" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Catatan (opsional)" className={field} />
         </div>

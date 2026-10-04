@@ -18,6 +18,17 @@ export default function FilterForm({ className, children }: { className?: string
 
   useEffect(() => () => clearTimeout(timer.current), []);
 
+  // DateInput (calendar) sets a hidden input and fires a native change event React doesn't report
+  useEffect(() => {
+    const form = ref.current;
+    if (!form) return;
+    const onNativeChange = (e: Event) => {
+      if (e.target instanceof HTMLInputElement && e.target.type === "hidden") applyRef.current();
+    };
+    form.addEventListener("change", onNativeChange);
+    return () => form.removeEventListener("change", onNativeChange);
+  }, []);
+
   function apply() {
     clearTimeout(timer.current);
     const form = ref.current;
@@ -32,12 +43,15 @@ export default function FilterForm({ className, children }: { className?: string
     startTransition(() => router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false }));
   }
 
+  const applyRef = useRef(apply);
+  applyRef.current = apply;
+
   function onChange(e: React.FormEvent<HTMLFormElement>) {
     const t = e.target;
     if (t instanceof HTMLSelectElement) return apply();
     if (t instanceof HTMLInputElement) {
       clearTimeout(timer.current);
-      timer.current = setTimeout(apply, t.type === "date" ? 700 : 400);
+      timer.current = setTimeout(apply, 400);
     }
   }
 

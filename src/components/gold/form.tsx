@@ -4,6 +4,7 @@ import React from "react";
 import { useFormStatus } from "react-dom";
 import type { ActionResult } from "@/lib/action-result";
 import RupiahInput from "./RupiahInput";
+import DateInput from "./DateInput";
 import { onlyDigits } from "@/lib/format";
 
 const inputBase =
@@ -55,6 +56,25 @@ export function TextField({ name, label, error, hint, suffix, required, classNam
         />
         {suffix && <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-sm text-gray-400">{suffix}</span>}
       </div>
+    </Field>
+  );
+}
+
+/** Date picked from a calendar (not typed); submits "YYYY-MM-DD" under `name`. */
+export function DateField({ name, label, error, hint, required, className, defaultValue, min, max, placeholder }: Omit<InputProps, "suffix">) {
+  return (
+    <Field label={label} name={name} error={error} hint={hint} required={required}>
+      <DateInput
+        id={name}
+        name={name}
+        defaultValue={defaultValue === undefined ? undefined : String(defaultValue)}
+        min={min === undefined ? undefined : String(min)}
+        max={max === undefined ? undefined : String(max)}
+        placeholder={placeholder}
+        required={required}
+        aria-invalid={!!error}
+        className={`${inputBase} h-10 ${error ? inputErr : inputOk} ${className ?? ""}`}
+      />
     </Field>
   );
 }

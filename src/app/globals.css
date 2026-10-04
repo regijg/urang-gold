@@ -372,6 +372,13 @@
 .flatpickr-day.prevMonthDay {
   @apply !text-gray-400;
 }
+.flatpickr-day.flatpickr-disabled,
+.flatpickr-day.flatpickr-disabled:hover {
+  @apply !cursor-not-allowed !border-transparent !bg-transparent !text-gray-300 dark:!text-gray-600;
+}
+.flatpickr-day.today:not(.selected):not(.startRange):not(.endRange) {
+  @apply !border-brand-300 dark:!border-brand-800;
+}
 
 .flatpickr-months > .flatpickr-month {
   background: none !important;

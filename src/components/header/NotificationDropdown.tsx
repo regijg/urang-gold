@@ -45,7 +45,9 @@ export default function NotificationDropdown() {
       <Dropdown
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
-        className="absolute right-0 mt-[17px] flex h-auto max-h-[520px] w-[calc(100vw-16px)] max-w-[350px] flex-col rounded-2xl border border-gray-200 bg-white p-3 shadow-theme-lg dark:border-gray-800 dark:bg-gray-dark sm:w-[361px] sm:max-w-[361px]"
+        // phone: full-width sheet under the header; sm–lg: bell sits at the right edge, so align right;
+        // lg: bell sits left (next to the sidebar toggle), so open rightwards from it
+        className="mt-[17px] flex h-auto max-h-[520px] w-[361px] max-w-[361px] flex-col rounded-2xl border border-gray-200 bg-white p-3 shadow-theme-lg dark:border-gray-800 dark:bg-gray-dark max-sm:fixed max-sm:inset-x-2 max-sm:top-[4.25rem] max-sm:mt-0 max-sm:max-h-[calc(100dvh-5rem)] max-sm:w-auto max-sm:max-w-none lg:left-0 lg:right-auto"
       >
         <div className="mb-3 flex items-center justify-between border-b border-gray-100 pb-3 dark:border-gray-700">
           <h5 className="text-base font-semibold text-gray-800 dark:text-gray-200">Notifikasi</h5>

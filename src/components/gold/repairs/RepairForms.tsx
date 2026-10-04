@@ -1,5 +1,6 @@
 "use client";
 
+import DateInput from "../DateInput";
 import { useRouter } from "next/navigation";
 import React, { useActionState, useState, useTransition } from "react";
 import type { ActionResult } from "@/lib/action-result";
@@ -96,7 +97,7 @@ export function NewRepairForm({ stores, today }: { stores: { id: string; name: s
           </div>
           <div>
             <label className={label}>Janji selesai</label>
-            <input type="date" value={dueDate} min={today} onChange={(e) => setDueDate(e.target.value)} className={field} />
+            <DateInput value={dueDate} min={today} onChange={setDueDate} className={field} />
             {err("dueDate")}
           </div>
         </div>

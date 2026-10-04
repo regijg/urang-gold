@@ -4,7 +4,7 @@ import React, { useActionState, useEffect, useState, useTransition } from "react
 import type { ActionResult } from "@/lib/action-result";
 import { PAYMENT_LABELS, PAYMENT_METHODS } from "@/lib/payments";
 import { EXPENSE_CATEGORIES, EXPENSE_LABELS } from "@/lib/validation/operations";
-import { CurrencyField, FormAlert, SelectField, SubmitButton, TextField, fieldErrorsOf } from "./form";
+import { CurrencyField, DateField, FormAlert, SelectField, SubmitButton, TextField, fieldErrorsOf } from "./form";
 
 export function ExpenseForm({
   action,
@@ -34,7 +34,7 @@ export function ExpenseForm({
         </div>
         <TextField name="description" label="Keterangan" placeholder="mis. Token listrik Oktober" error={errors.description} required />
         <div className="grid gap-3 sm:grid-cols-3">
-          <TextField name="expenseDate" type="date" label="Tanggal" defaultValue={today} max={today} error={errors.expenseDate} />
+          <DateField name="expenseDate" label="Tanggal" defaultValue={today} max={today} error={errors.expenseDate} />
           <SelectField name="method" label="Dibayar dengan" options={PAYMENT_METHODS.map((m) => ({ value: m, label: PAYMENT_LABELS[m] }))} defaultValue="CASH" error={errors.method} />
           {stores.length > 1 ? (
             <SelectField name="storeId" label="Outlet" options={stores} error={errors.storeId} />
