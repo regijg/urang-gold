@@ -9,13 +9,14 @@ export async function loginAction(_prev: ActionResult | null, formData: FormData
   const parsed = validateLogin({ email: formData.get("email"), password: formData.get("password") });
   if (!parsed.valid) return fail("VALIDATION_ERROR", "Periksa kembali isian Anda.", parsed.errors);
 
+  let platformAdmin = false;
   try {
-    await authService.login(parsed.data);
+    ({ platformAdmin } = await authService.login(parsed.data));
   } catch (error) {
     return toFailure(error);
   }
 
-  redirect(safeRedirectPath(formData.get("next")));
+  redirect(platformAdmin ? "/platform" : safeRedirectPath(formData.get("next")));
 }
 
 export async function registerAction(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import LoginForm from "@/components/auth/LoginForm";
+import { isRegistrationEnabled } from "@/server/services/auth.service";
 
 export const metadata: Metadata = {
   title: "Masuk | UrangGold",
@@ -11,5 +12,5 @@ export default async function LoginPage({
   searchParams: Promise<{ next?: string; error?: string }>;
 }) {
   const { next, error } = await searchParams;
-  return <LoginForm next={next} error={error} />;
+  return <LoginForm next={next} error={error} registrationEnabled={isRegistrationEnabled()} />;
 }

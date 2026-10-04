@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { findProfileById } from "@/server/repositories/user.repository";
 import { AppError } from "@/lib/action-result";
+import { getPlatformAdmin } from "@/server/auth/platform";
 import { isRoleCode, normalizePermissions, type Permission, type RoleCode } from "@/lib/auth/permissions";
 
 export type AppSession = {
@@ -48,7 +49,11 @@ export const getAppSession = cache(async (): Promise<AppSession | null> => {
 /** For pages/layouts: signs out and redirects to /login when there is no usable session. */
 export async function requireAppSession(): Promise<AppSession> {
   const session = await getAppSession();
-  if (!session) redirect("/auth/signout");
+  if (!session) {
+    // the app owner has no shop: send them to their own console instead of signing them out
+    if (await getPlatformAdmin()) redirect("/platform");
+    redirect("/auth/signout");
+  }
   return session;
 }
 

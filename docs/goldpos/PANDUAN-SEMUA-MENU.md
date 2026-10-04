@@ -30,6 +30,7 @@ Urutannya mengikuti urutan menu di aplikasi. Untuk gambaran besar lihat [PROSES-
 | 16 | Pengguna | `/users` | `users.manage` | Akun staf |
 | 17 | Outlet | `/stores` | `stores.manage` | Cabang toko |
 | 18 | Pengaturan | `/settings` | `tenant.manage` | Profil toko dan hak akses |
+| (khusus) | Platform | `/platform` | email di `PLATFORM_ADMIN_EMAILS` | Konsol pemilik aplikasi: kelola toko pelanggan |
 
 ---
 
@@ -458,6 +459,23 @@ Yang wajib adalah **barangnya sudah ada di Inventory dengan status Tersedia** di
 
 - **Profil toko:** nama toko/usaha (muncul di nota).
 - **Hak akses tiap role** (matriks): centang apa yang boleh dilakukan Admin, Manager, Kasir, dan Gudang. Hak sensitif (mengatur staf dan pengaturan toko) hanya dimiliki owner dan tidak bisa dibagikan.
+
+---
+
+## Platform (khusus pemilik aplikasi UrangGold)
+
+**Untuk apa:** mengelola **toko-toko pelanggan** yang memakai UrangGold. Menu ini **tidak muncul di sidebar** toko mana pun. Hanya akun yang emailnya terdaftar di `PLATFORM_ADMIN_EMAILS` yang bisa membukanya, dan akun itu otomatis masuk ke `/platform` saat login.
+
+**Pendaftaran mandiri ditutup.** Siapa pun tidak bisa membuat toko sendiri. Calon pelanggan menghubungi pemilik aplikasi, lalu pemilik membuat tokonya di sini.
+
+**Alur:**
+1. Pelanggan menghubungi pemilik aplikasi dan menyepakati paket serta pembayaran.
+2. Pemilik membuka `/platform` → **+ Toko Baru**: isi nama usaha, outlet pertama, paket, serta nama, email, dan password owner toko.
+3. Email dan password diberikan ke pelanggan. Pelanggan login di `/login` dan mulai dari [Urutan Setup Pertama Kali](#urutan-setup-pertama-kali).
+4. Di daftar toko, pemilik memantau pemakaian (outlet, pengguna, transaksi, omzet, terakhir menjual).
+5. Pelanggan tidak membayar: **Tangguhkan** tokonya. Semua penggunanya langsung tidak bisa masuk, data tetap aman, dan bisa **Aktifkan** lagi setelah membayar.
+
+Perubahan **Paket** (Gratis / Starter / Pro) saat ini hanya pencatatan dan belum membatasi fitur.
 
 ---
 

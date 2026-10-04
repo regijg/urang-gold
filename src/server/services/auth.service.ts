@@ -1,18 +1,28 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { AppError } from "@/lib/action-result";
+import { isPlatformAdminUser } from "@/lib/auth/platform";
 import type { LoginInput, RegisterInput } from "@/lib/validation/auth";
 import { findProfileById } from "@/server/repositories/user.repository";
 import { registerTenant } from "@/server/repositories/tenant.repository";
 
-/** Signs in and verifies the user belongs to an active tenant; otherwise signs out again. */
-export async function login(input: LoginInput): Promise<void> {
+/**
+ * Signs in and verifies the user belongs to an active tenant; otherwise signs out again.
+ * Platform admins (PLATFORM_ADMIN_EMAILS) have no shop: they go to the platform console instead.
+ */
+export async function login(input: LoginInput): Promise<{ platformAdmin: boolean }> {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase.auth.signInWithPassword(input);
 
+  if (error?.code === "email_not_confirmed") {
+    // Supabase only reports this once the password was right, so it does not reveal which emails exist
+    throw new AppError("EMAIL_NOT_CONFIRMED", "Email belum diverifikasi. Minta admin UrangGold memverifikasi akun Anda.");
+  }
   if (error || !data.user) {
     throw new AppError("INVALID_CREDENTIALS", "Email atau password salah.");
   }
+
+  if (isPlatformAdminUser(data.user)) return { platformAdmin: true };
 
   const profile = await findProfileById(supabase, data.user.id);
 
@@ -32,21 +42,24 @@ export async function login(input: LoginInput): Promise<void> {
   // audit trail (§27); a failure here must not block the login
   const { error: auditError } = await supabase.rpc("gold_log_login");
   if (auditError) console.error("[auth] login audit failed", auditError.message);
-}
-
-/** Public self-service signup can be switched off in production (REGISTRATION_ENABLED=false). */
-export function isRegistrationEnabled(): boolean {
-  return process.env.REGISTRATION_ENABLED !== "false";
+  return { platformAdmin: false };
 }
 
 /**
- * Self-service signup: creates the auth user, then tenant + first store + OWNER
- * profile in one DB transaction (RPC). Rolls back the auth user if the RPC fails.
+ * Public self-service signup is CLOSED unless REGISTRATION_ENABLED=true. Shops are normally
+ * created by the platform admin from /platform (see provisionTenant), so nobody can use
+ * UrangGold without the owner of the app knowing.
  */
-export async function registerOwner(input: RegisterInput): Promise<void> {
-  if (!isRegistrationEnabled()) {
-    throw new AppError("REGISTRATION_DISABLED", "Pendaftaran toko baru sedang ditutup. Hubungi admin UrangGold.");
-  }
+export function isRegistrationEnabled(): boolean {
+  return process.env.REGISTRATION_ENABLED === "true";
+}
+
+/**
+ * Creates the auth user, then tenant + first store + OWNER profile in one DB transaction (RPC).
+ * Rolls back the auth user if the RPC fails. Callers must have authorised this themselves:
+ * registerOwner (when public signup is open) or the platform console (platform admin only).
+ */
+export async function provisionTenant(input: RegisterInput): Promise<{ tenantId: string; storeId: string }> {
   const admin = createSupabaseAdminClient();
 
   const { data: created, error: createError } = await admin.auth.admin.createUser({
@@ -65,7 +78,7 @@ export async function registerOwner(input: RegisterInput): Promise<void> {
   }
 
   try {
-    await registerTenant(admin, {
+    return await registerTenant(admin, {
       userId: created.user.id,
       email: input.email,
       fullName: input.fullName,
@@ -76,7 +89,14 @@ export async function registerOwner(input: RegisterInput): Promise<void> {
     await admin.auth.admin.deleteUser(created.user.id);
     throw error;
   }
+}
 
+/** Public self-service signup (only while REGISTRATION_ENABLED=true): provisions the shop and signs the owner in. */
+export async function registerOwner(input: RegisterInput): Promise<void> {
+  if (!isRegistrationEnabled()) {
+    throw new AppError("REGISTRATION_DISABLED", "Pendaftaran toko baru ditutup. Untuk memakai UrangGold, hubungi admin UrangGold.");
+  }
+  await provisionTenant(input);
   await login({ email: input.email, password: input.password });
 }
 

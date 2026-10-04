@@ -10,7 +10,7 @@ const SESSION_ERRORS: Record<string, string> = {
   session: "Sesi tidak valid atau akun belum aktif. Silakan login kembali.",
 };
 
-export default function LoginForm({ next, error }: { next?: string; error?: string }) {
+export default function LoginForm({ next, error, registrationEnabled = false }: { next?: string; error?: string; registrationEnabled?: boolean }) {
   const [state, formAction, pending] = useActionState(loginAction, null);
   const fieldErrors = state && !state.success ? state.fieldErrors : undefined;
   const message = state && !state.success ? state.message : error ? SESSION_ERRORS[error] : undefined;
@@ -38,12 +38,18 @@ export default function LoginForm({ next, error }: { next?: string; error?: stri
           </Button>
         </form>
 
-        <p className="mt-5 text-sm text-center text-gray-700 dark:text-gray-400">
-          Belum punya akun?{" "}
-          <Link href="/register" className="text-brand-500 hover:text-brand-600 dark:text-brand-400">
-            Daftarkan toko Anda
-          </Link>
-        </p>
+        {registrationEnabled ? (
+          <p className="mt-5 text-sm text-center text-gray-700 dark:text-gray-400">
+            Belum punya akun?{" "}
+            <Link href="/register" className="text-brand-500 hover:text-brand-600 dark:text-brand-400">
+              Daftarkan toko Anda
+            </Link>
+          </p>
+        ) : (
+          <p className="mt-5 text-sm text-center text-gray-500 dark:text-gray-400">
+            Belum punya akun? Hubungi admin UrangGold untuk mulai memakai aplikasi.
+          </p>
+        )}
       </div>
     </div>
   );
